@@ -198,10 +198,46 @@ sub print_text {
 }
 
 sub update_site_files {
-  my ($file) = glob Irssi::settings_get_str('url_location');
-  if ($error = write_static_file($file)) {
-      Irssi::print("Unable to write $file: $error", MSGLEVEL_CLIENTERROR);
-      return 0;
+  my ($path) = glob Irssi::settings_get_str('url_html_location'); 
+  if (Irssi::settings_get_bool('url_use_webapp')) {
+      # Assume $path is a directory
+      $path =~ s+/$++; # Remove trailing slashes if any
+      my ($css) = "${path}/style.css";
+      my ($js) = "${path}/script.js";
+      my ($html) = "${path}/index.html";
+      my ($json) = "${path}/urls.json";
+      if (! -e $css) {
+          if ($error = write_css_file($css)) {
+              Irssi::print("Unable to write $css: $error", MSGLEVEL_CLIENTERROR);
+              return 0;
+          }
+      }
+      if (! -e $js) {
+          if ($error = write_js_file($js)) {
+              Irssi::print("Unable to write $js: $error", MSGLEVEL_CLIENTERROR);
+              return 0;
+          }
+      }
+      if (! -e $html) {
+          if ($error = write_html_file($html)) {
+              Irssi::print("Unable to write $html: $error", MSGLEVEL_CLIENTERROR);
+              return 0;
+          }
+      }
+      # Always write new json file
+      if ($error = write_json_file($json)) {
+          Irssi::print("Unable to write $json: $error", MSGLEVEL_CLIENTERROR);
+          return 0;
+      }
+  } else {
+      if (-d $path) {
+          $path =~ s+/$++; # Remove trailing slashes if any
+          $path = "${path}/index.html";
+      }
+      if ($error = write_static_file($path)) {
+          Irssi::print("Unable to write $path: $error", MSGLEVEL_CLIENTERROR);
+          return 0;
+      }
   }
   return 1;
 }
