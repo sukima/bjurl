@@ -199,9 +199,9 @@ sub print_text {
 
 sub update_site_files {
   my ($path) = glob Irssi::settings_get_str('url_html_location'); 
+  $path =~ s+/$++; # Remove trailing slashes if any
   if (Irssi::settings_get_bool('url_use_webapp')) {
       # Assume $path is a directory
-      $path =~ s+/$++; # Remove trailing slashes if any
       my ($css) = "${path}/style.css";
       my ($js) = "${path}/script.js";
       my ($html) = "${path}/index.html";
@@ -229,17 +229,15 @@ sub update_site_files {
           Irssi::print("Unable to write $json: $error", MSGLEVEL_CLIENTERROR);
           return 0;
       }
+      $path = $html;
   } else {
-      if (-d $path) {
-          $path =~ s+/$++; # Remove trailing slashes if any
-          $path = "${path}/index.html";
-      }
+      $path = "${path}/index.html" if (-d $path);
       if ($error = write_static_file($path)) {
           Irssi::print("Unable to write $path: $error", MSGLEVEL_CLIENTERROR);
           return 0;
       }
   }
-  return 1;
+  return $path;
 }
 
 sub write_static_file {
