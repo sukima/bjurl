@@ -1,21 +1,19 @@
-# $Id: burl.pl,v 1.7 2003/03/26 13:41:11 hugo Exp $
-#
-# This script is a code fork of Jean-Yves Lefort's url.pl, version 0.54.
-# See http://void.adminz.be/ 
+# This is a code fork of burl.pl by Hugo Haas.
+# burl.pl by Hugo Haas was a code fork of Jean-Yves Lefort's url.pl, version 0.54.
 
 use Irssi 20020121.2020 ();
 use URI::Escape;
 use HTML::Entities;
 $VERSION = "1.0";
 %IRSSI = (
-	  authors     => 'Hugo Haas',
-	  contact     => 'hugo\@larve.net',
-	  name        => 'burl',
-	  description => 'A better URL grabber for Irssi',
+	  authors     => 'Devin weaver',
+	  contact     => 'suki\@tritarget.org',
+	  name        => 'bjurl',
+	  description => 'A better jQuery URL grabber for Irssi',
 	  license     => 'BSD',
-	  changed     => '$Date: 2003/03/26 13:41:11 $ ',
+	  changed     => '2011/12/13',
 	  modules     => 'URI::Escape HTML::Entities',
-	  commands    => 'burl'
+	  commands    => 'bjurl'
 );
 
 # description:
