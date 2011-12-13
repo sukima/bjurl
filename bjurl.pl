@@ -64,6 +64,12 @@ $VERSION = "1.0";
 #		where to write the URL list
 #		example: ~/.irssi-urls.html
 #
+#	url_use_webapp
+#
+#	        create a dynamic JavaScript based web app or
+#	        just a static html file
+#	        example: OFF
+#
 # commands
 #
 #	/URL [-clear|<number>]
@@ -283,6 +289,7 @@ Irssi::settings_add_bool('misc', 'url_redundant', 0);
 Irssi::settings_add_str('misc', 'browse_command',
 			'galeon-wrapper %u >/dev/null &');
 Irssi::settings_add_str('misc', 'url_html_location', '~/.irc_url_list.html');
+Irssi::settings_add_bool('misc', 'url_use_webapp', 0);
 
 Irssi::signal_add('print text', \&print_text);
 
