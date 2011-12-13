@@ -141,6 +141,7 @@ sub split_and_insert {
 		post_url => "$'"
 		};
 	    $num = @items;
+            update_site_files;
 	    Irssi::print('Added item #' . $num . ' to URL list')
 		if Irssi::settings_get_bool('url_verbose_grab');
 	}
@@ -283,7 +284,6 @@ EOF
 
 sub url {
   my ($args, $server, $item) = @_;
-  my ($file) = glob Irssi::settings_get_str('url_html_location');
   my $command = Irssi::settings_get_str('browse_command');
 
   if ($args ne '') {
@@ -301,11 +301,9 @@ sub url {
     }
   } else {
     if (@items) {
-      my $error;
-      if ($error = write_static_file($file)) {
-	Irssi::print("Unable to write $file: $error", MSGLEVEL_CLIENTERROR);
-      } else  {
-	system(expand($command, 'u', $file));
+      my $file;
+      if ($file = update_site_files) {
+	system(expand($command, 'u', $file)) if ($command && $command ne "");
       }
     } else {
       Irssi::print('URL list is empty');
