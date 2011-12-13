@@ -59,7 +59,7 @@ $VERSION = "1.0";
 #		%u will be replaced by the URL
 #		example: galeon %u &
 #
-#	url_file
+#	url_html_location
 #
 #		where to write the URL list
 #		example: ~/.irssi-urls.html
@@ -191,7 +191,16 @@ sub print_text {
   }
 }
 
-sub write_file {
+sub update_site_files {
+  my ($file) = glob Irssi::settings_get_str('url_location');
+  if ($error = write_static_file($file)) {
+      Irssi::print("Unable to write $file: $error", MSGLEVEL_CLIENTERROR);
+      return 0;
+  }
+  return 1;
+}
+
+sub write_static_file {
   my $file = shift;
 
   open(FILE, ">$file") or return $!;
@@ -234,7 +243,7 @@ EOF
 
 sub url {
   my ($args, $server, $item) = @_;
-  my ($file) = glob Irssi::settings_get_str('url_file');
+  my ($file) = glob Irssi::settings_get_str('url_html_location');
   my $command = Irssi::settings_get_str('browse_command');
 
   if ($args ne '') {
@@ -253,7 +262,7 @@ sub url {
   } else {
     if (@items) {
       my $error;
-      if ($error = write_file($file)) {
+      if ($error = write_static_file($file)) {
 	Irssi::print("Unable to write $file: $error", MSGLEVEL_CLIENTERROR);
       } else  {
 	system(expand($command, 'u', $file));
@@ -273,7 +282,7 @@ Irssi::settings_add_bool('lookandfeel', 'url_hilight', 1);
 Irssi::settings_add_bool('misc', 'url_redundant', 0);
 Irssi::settings_add_str('misc', 'browse_command',
 			'galeon-wrapper %u >/dev/null &');
-Irssi::settings_add_str('misc', 'url_file', '~/.irc_url_list.html');
+Irssi::settings_add_str('misc', 'url_html_location', '~/.irc_url_list.html');
 
 Irssi::signal_add('print text', \&print_text);
 
