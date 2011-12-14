@@ -18,15 +18,17 @@ require "bjurl.pl";
 # there but our arguments override after definition.
 my ($method) = shift;
 my (@arg_list) = ( );
-my ($setting_stop_found) = 0;
+my ($stop_steps) = 0; # 0 => method args, 1 => text to parse, 2 => setting=options
 foreach my $arg (@ARGV) {
-    if ($setting_stop_found) {
+    if ($arg eq "--") {
+        $stop_steps++;
+    } elsif ($stop_steps == 0) {
+        push @arg_list, $arg;
+    } elsif ($stop_steps == 1) {
+        &split_and_insert("nick", "text $arg", $arg);
+    } else {
         my ($k, $v) = split(/=/, $arg);
         $Irssi::script_options{ $k } = $v;
-    } elsif ($arg eq "--") {
-        $setting_stop_found = 1;
-    } else {
-        push(@arg_list, $arg);
     }
 }
 
