@@ -23,6 +23,6 @@ Feature: Update site files
         Then a directory named "test" should exist
         And a file named "test/index.html" should exist
         And a file named "test/style.css" should exist
-        And a file named "test/scripts.js" should exist
+        And a file named "test/script.js" should exist
         And a file named "test/urls.json" should exist
         And the file "test/urls.json" should contain "http://foobar.com/"
