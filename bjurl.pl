@@ -115,6 +115,10 @@ sub expand {
 }
 # -verbatim- end
 
+sub push_items {
+    push @items, @_;
+}
+
 sub split_and_insert {
     my ($target, $text, $stripped) = @_;
 
@@ -132,16 +136,14 @@ sub split_and_insert {
 	}
 
 	if ($num == -1) {
-	    push @items,
-	    {
+	    &push_items({
 		time => time,
 		target => $target,
 		pre_url => "$`",
 		url => "$&",
 		post_url => "$'"
-		};
+            });
 	    $num = @items;
-            &update_site_files;
 	    Irssi::print('Added item #' . $num . ' to URL list')
 		if Irssi::settings_get_bool('url_verbose_grab');
 	}
@@ -165,6 +167,13 @@ sub split_and_insert {
     }
 }
 
+sub parse_text {
+    my ($l) = length @items;
+    my (@ret) = &split_and_insert(@_);
+    &update_site_files if ($l != length @items);
+    return @ret;
+}
+
 my $inprogress = 0;
 
 sub print_text {
@@ -183,7 +192,7 @@ sub print_text {
       $l = $t;
       while($l ne '') {
 	  my $r;
-	  ($r, $l, $s) = &split_and_insert($textdest->{target}, $l, $s);
+	  ($r, $l, $s) = &parse_text($textdest->{target}, $l, $s);
 	  $text .= $r;
       }
 
