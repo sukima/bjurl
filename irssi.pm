@@ -11,7 +11,7 @@ sub settings_add_str {
 }
 
 sub settings_add_bool {
-    $script_options{ $_[1] } = $_[2]; # ignore first argument
+    $script_options{ $_[1] } = ($_[2]) ? "ON" : "OFF"; # ignore first argument
 }
 
 sub signal_add { 1; } # do nothing, stub
@@ -23,7 +23,7 @@ sub settings_get_str {
 }
 
 sub settings_get_bool {
-    return (0 || $script_options{ $_[0] });
+    return ($script_options{ $_[0] } =~ /ON/i) ? 1 : 0;
 }
 
 sub level2bits {
