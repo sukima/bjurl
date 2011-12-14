@@ -10,16 +10,24 @@ use constant MSGLEVEL_NO_URL => 0;
 use constant MSGLEVEL_CLIENTERROR => 0;
 use constant MSGS => 0;
 
-die "Incorrect number of arguments" if ($#ARGV+1 < 2);
+die "Incorrect number of arguments" if ($#ARGV+1 < 1);
 use Irssi;
 require "bjurl.pl";
 
 # Since bjurl.pl is loaded prior to us assigning any values the default are
 # there but our arguments override after definition.
 my ($method) = shift;
+my (@arg_list) = ( );
+my ($setting_stop_found) = 0;
 foreach my $arg (@ARGV) {
-    my ($k, $v) = split(/=/, $arg);
-    $Irssi::script_options{ $k } = $v;
+    if ($setting_stop_found) {
+        my ($k, $v) = split(/=/, $arg);
+        $Irssi::script_options{ $k } = $v;
+    } elsif ($arg eq "--") {
+        $setting_stop_found = 1;
+    } else {
+        push(@arg_list, $arg);
+    }
 }
 
-&$method();
+&$method(@arg_list);
