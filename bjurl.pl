@@ -141,7 +141,7 @@ sub split_and_insert {
 		post_url => "$'"
 		};
 	    $num = @items;
-            update_site_files;
+            &update_site_files;
 	    Irssi::print('Added item #' . $num . ' to URL list')
 		if Irssi::settings_get_bool('url_verbose_grab');
 	}
@@ -208,32 +208,32 @@ sub update_site_files {
       my ($html) = "${path}/index.html";
       my ($json) = "${path}/urls.json";
       if (! -e $css) {
-          if ($error = write_css_file($css)) {
+          if (my $error = write_css_file($css)) {
               Irssi::print("Unable to write $css: $error", MSGLEVEL_CLIENTERROR);
               return 0;
           }
       }
       if (! -e $js) {
-          if ($error = write_js_file($js)) {
+          if (my $error = write_js_file($js)) {
               Irssi::print("Unable to write $js: $error", MSGLEVEL_CLIENTERROR);
               return 0;
           }
       }
       if (! -e $html) {
-          if ($error = write_html_file($html)) {
+          if (my $error = write_html_file($html)) {
               Irssi::print("Unable to write $html: $error", MSGLEVEL_CLIENTERROR);
               return 0;
           }
       }
       # Always write new json file
-      if ($error = write_json_file($json)) {
+      if (my $error = write_json_file($json)) {
           Irssi::print("Unable to write $json: $error", MSGLEVEL_CLIENTERROR);
           return 0;
       }
       $path = $html;
   } else {
       $path = "${path}/index.html" if (-d $path);
-      if ($error = write_static_file($path)) {
+      if (my $error = write_static_file($path)) {
           Irssi::print("Unable to write $path: $error", MSGLEVEL_CLIENTERROR);
           return 0;
       }
@@ -302,7 +302,7 @@ sub url {
   } else {
     if (@items) {
       my $file;
-      if ($file = update_site_files) {
+      if ($file = &update_site_files) {
 	system(expand($command, 'u', $file)) if ($command && $command ne "");
       }
     } else {
