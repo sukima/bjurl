@@ -254,6 +254,51 @@ sub update_site_files {
   return $path;
 }
 
+sub write_css_file {
+    my $file = shift;
+    open(FILE, ">$file") or return $!;
+    print FILE <<'EOF' or return $!;
+EOF
+    close(FILE) or return $!;
+    return undef;
+}
+
+sub write_js_file {
+    my $file = shift;
+    open(FILE, ">$file") or return $!;
+    print FILE <<'EOF' or return $!;
+EOF
+    close(FILE) or return $!;
+    return undef;
+}
+
+sub write_html_file {
+    my $file = shift;
+    open(FILE, ">$file") or return $!;
+    print FILE <<'EOF' or return $!;
+EOF
+    close(FILE) or return $!;
+    return undef;
+}
+
+sub write_json_file {
+    my $file = shift;
+    open(FILE, ">$file") or return $!;
+    print FILE "[" or return $!;
+    foreach (@items) {
+        my $timestamp = strftime('%Y-%m-%d %H:%M%Z', localtime $_->{time});
+        print FILE
+        "{\"time\":\"$timestamp\",\"target\":\"$_->{target}\",\"message\":\"$_->{pre_url}<a href='"
+        . HTML::Entities::encode(uri_escape($_->{url}, "^-A-Za-z0-9./:")) . "'>"
+        . HTML::Entities::encode($_->{url}) . "</a>$_->{post_url}\"}"
+            or return $!;
+        print FILE "," unless ($_ == $items[-1]);
+    }
+    print FILE "]\n" or return $!;
+    close(FILE) or return $!;
+    return undef;
+}
+
 sub write_static_file {
   my $file = shift;
 
