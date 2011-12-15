@@ -497,6 +497,15 @@ EOF
 }
 
 sub clean_site_files {
+  my ($path) = &find_path;
+  if (Irssi::settings_get_bool('url_use_webapp')) {
+    unlink  "${path}/style.css";
+    unlink "${path}/script.js";
+    unlink "${path}/index.html";
+    unlink "${path}/urls.json";
+  } else {
+    unlink $path;
+  }
 }
 
 sub url {
