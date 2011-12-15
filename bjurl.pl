@@ -266,11 +266,11 @@ body {
     color: #000;
 }
 #container { margin: auto; }
-.title {
-    font-family: "MolotRegular", Arial, sans-serif;
-    text-shadow:5px 5px 5px #333333;
-    -moz-text-shadow:5px 5px 5px #333333;
-    -webkit-text-shadow:5px 5px 5px #333333;
+.title { font-family: "MolotRegular", Arial, sans-serif; }
+#error {
+    background-color: red;
+    margin: 0px 0px 20px 0px;
+    padding: 5px;
 }
 .last-update {
     font-style: italic;
@@ -280,6 +280,7 @@ body {
     text-align: left;
     padding: 5px 0px;
     border: 3px solid #000;
+    background-color: #4DC9FF;
 }
 .url-item {
     border: 0px;
@@ -306,12 +307,16 @@ a { color: #000; }
     #container { width: 460px; }
 }
 @media only screen and (min-width: 600px) {
-    #container { width: 600px; }
-    #url-list {
+    #container { width: 580px; }
+    .title {
+        text-shadow:5px 5px 5px #333333;
+        -moz-text-shadow:5px 5px 5px #333333;
+        -webkit-text-shadow:5px 5px 5px #333333;
+    }
+    #error, #url-list {
         border-radius: 10px;
         -moz-border-radius: 10px;
         -webkit-border-radius: 10px;
-        background-color: #4DC9FF;
         box-shadow:5px 5px 5px #333333;
         -moz-box-shadow:5px 5px 5px #333333;
         -webkit-box-shadow:5px 5px 5px #333333;
@@ -326,7 +331,15 @@ sub write_js_file {
     my $file = shift;
     open(FILE, ">$file") or return $!;
     print FILE <<'EOF' or return $!;
-var Site = { data: [ ], size: 0, running: false, timmer: null };
+var Site = { data: [ ], size: 0, running: false, timmer: null, error_msg: "" };
+Site.show_error = function() {
+    if (Site.error_msg != "") {
+        $("#error").html("<span class='error_msg'>"+Site.error_msg+"</span>").show();
+    } else {
+        $("#error").hide();
+    }
+    Site.error_msg = "";
+};
 Site.populate = function()  {
     var evenodd;
     if (!Site.running || Site.data.length < Site.size) {
@@ -352,12 +365,18 @@ Site.populate = function()  {
     Site.running = true;
     Site.size = Site.data.length;
     $("#update-time").text(new Date().toLocaleString());
+    Site.show_error();
 };
 Site.continueCycle = function() {
     Site.timmer = setTimeout(Site.fetch, 30000); /* 30 seconds */
 };
 Site.success = function(d) {
     Site.data = d;
+    Site.populate();
+    Site.continueCycle();
+};
+Site.error = function(jqXHR, textStatus, errorThrown) {
+    Site.error_msg = "There was an error loading update. Try again by refreshing the entire page. "+ errorThrown;
     Site.populate();
     Site.continueCycle();
 };
@@ -370,7 +389,8 @@ Site.fetch = function()  {
         url: "urls.json",
         dataType: 'json',
         cache: false,
-        success: Site.success
+        success: Site.success,
+        error: Site.error
     });
 };
 EOF
@@ -395,7 +415,8 @@ sub write_html_file {
         <h1 class="title">IRC URL list</h1>
         <p class="last-update">Last Update: <span id="update-time"></span>
             [<a href="#" id="refresh">refresh</a>]</p>
-        <div id="url-list"><div class="url-item">Loading...</div></div>
+        <div id="error" style="display:none;"></div>
+        <div id="url-list"><div class="url-item" style="text-align:center;">Loading...</div></div>
       </div>
       <div id="footer"><a href="http://github.com/sukima/bjurl" target="_blank">bjurl</a> by Devin Weaver</div>
   </body>
