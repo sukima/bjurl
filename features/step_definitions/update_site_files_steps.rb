@@ -5,7 +5,7 @@ end
 
 def run_bjurl_method(method, args="")
   # aruba's sandbox default is "tmp/aruba" therefore all files needed are found in "../.."
-  run_simple(unescape("perl -I../.. ../../tester.pl #{method} #{args} -- #{@line} -- #{@settings}"))
+  run_simple(unescape("perl -I../.. -I../../test ../../test/tester.pl #{method} #{args} -- #{@line} -- #{@settings}"))
 end
 
 Given /^irssi has the following settings$/ do |table|
