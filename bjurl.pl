@@ -397,7 +397,7 @@ sub write_html_file {
             [<a href="#" id="refresh">refresh</a>]</p>
         <div id="url-list"><div class="url-item">Loading...</div></div>
       </div>
-      <div id="footer"><a href="http://github.com/sukima/bjurl" target="_blank">bjurl</a> version ${VERSION} by ${IRSSI->authors}</div>
+      <div id="footer"><a href="http://github.com/sukima/bjurl" target="_blank">bjurl</a> by Devin Weaver</div>
   </body>
   <script type="text/javascript">
       $(function() {
