@@ -3,8 +3,7 @@ Given /^the static file was created$/ do
 end
 
 When /^the user enters the command "([^"]*)"$/ do |arg1|
-    arg = arg1.split(" ")[1]
-    run_simple(unescape("perl -I../.. ../../tester.pl url #{arg}"))
+    run_bjurl_method "url", arg1.split(" ")[1]
 end
 
 Given /^the webapp was created$/ do
