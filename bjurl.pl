@@ -211,7 +211,11 @@ sub update_site_files {
   my ($path) = glob Irssi::settings_get_str('url_html_location'); 
   $path =~ s+/$++; # Remove trailing slashes if any
   if (Irssi::settings_get_bool('url_use_webapp')) {
-      # Assume $path is a directory
+      mkdir $path if (! -e $path);
+      if (! -d $path) {
+          Irssi::print("Unable to write URL grabber webapp: $path is not a directory", MSGLEVEL_CLIENTERROR);
+          return 0;
+      }
       my ($css) = "${path}/style.css";
       my ($js) = "${path}/script.js";
       my ($html) = "${path}/index.html";
