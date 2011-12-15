@@ -258,6 +258,65 @@ sub write_css_file {
     my $file = shift;
     open(FILE, ">$file") or return $!;
     print FILE <<'EOF' or return $!;
+body {
+    text-align: center;
+    margin: 5px;
+    padding: 5px;
+    background: #fff;
+    color: #000;
+}
+#container { margin: auto; }
+.title {
+    font-family: "MolotRegular", Arial, sans-serif;
+    text-shadow:5px 5px 5px #333333;
+    -moz-text-shadow:5px 5px 5px #333333;
+    -webkit-text-shadow:5px 5px 5px #333333;
+}
+.last-update {
+    font-style: italic;
+    font-weight: normal;
+}
+#url-list {
+    text-align: left;
+    padding: 5px 0px;
+    border: 3px solid #000;
+}
+.url-item {
+    border: 0px;
+    margin: 0px;
+    padding: 5px 2px;
+}
+.odd { background-color: #4DC9FF; }
+.even { background-color: #00A4EB; }
+.time {
+    float: left;
+    margin: 0px 20px;
+}
+.nick { font-weight: bold; }
+.message a { font-weight: bold; }
+a { color: #000; }
+#footer {
+    margin-top: 20px;
+    font-size: 0.8em;
+}
+@media only screen and (min-width: 320px) {
+    #container { width: 300px; }
+}
+@media only screen and (min-width: 480px) {
+    #container { width: 460px; }
+}
+@media only screen and (min-width: 600px) {
+    #container { width: 600px; }
+    #url-list {
+        border-radius: 10px;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        background-color: #4DC9FF;
+        box-shadow:5px 5px 5px #333333;
+        -moz-box-shadow:5px 5px 5px #333333;
+        -webkit-box-shadow:5px 5px 5px #333333;
+    }
+}
 EOF
     close(FILE) or return $!;
     return undef;
@@ -267,6 +326,53 @@ sub write_js_file {
     my $file = shift;
     open(FILE, ">$file") or return $!;
     print FILE <<'EOF' or return $!;
+var Site = { data: [ ], size: 0, running: false, timmer: null };
+Site.populate = function()  {
+    var evenodd;
+    if (!Site.running || Site.data.length < Site.size) {
+        Site.size = 0;
+        $(".url-item").fadeOut("fast");
+    }
+    Site.update = new Date();
+    for (var i=Site.size; i < Site.data.length; i++)  {
+        evenodd = (i%2==0) ? "even" : "odd";
+        $("<div class=\"url-item "+ evenodd +"\">"+
+            "<span class=\"time\">"+ Site.data[i].time +"</span> "+
+            "<span class=\"nick\">"+ Site.data[i].nick +":</span> "+
+            "<span class=\"message\">"+ Site.data[i].message +"</span></div>")
+            .hide()
+            .css('opacity',0.0)
+            .prependTo('#url-list')
+            .slideDown('slow')
+            .animate({opacity: 1.0});
+        if (Site.running) {
+            console.log(Site.data[i]);
+        }
+    }
+    Site.running = true;
+    Site.size = Site.data.length;
+    $("#update-time").text(new Date().toLocaleString());
+};
+Site.continueCycle = function() {
+    Site.timmer = setTimeout(Site.fetch, 30000); /* 30 seconds */
+};
+Site.success = function(d) {
+    Site.data = d;
+    Site.populate();
+    Site.continueCycle();
+};
+Site.fetch = function()  {
+    if (Site.timmer !== null) {
+        clearTimeout(Site.timmer);
+        Site.timmer = null;
+    }
+    $.ajax({
+        url: "urls.json",
+        dataType: 'json',
+        cache: false,
+        success: Site.success
+    });
+};
 EOF
     close(FILE) or return $!;
     return undef;
@@ -276,6 +382,30 @@ sub write_html_file {
     my $file = shift;
     open(FILE, ">$file") or return $!;
     print FILE <<'EOF' or return $!;
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>IRC URL list</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="script.js" type="text/javascript"></script>
+  </head>
+  <body>
+      <div id="container">
+        <h1 class="title">IRC URL list</h1>
+        <p class="last-update">Last Update: <span id="update-time"></span>
+            [<a href="#" id="refresh">refresh</a>]</p>
+        <div id="url-list"><div class="url-item">Loading...</div></div>
+      </div>
+      <div id="footer"><a href="http://github.com/sukima/bjurl" target="_blank">bjurl</a> version ${VERSION} by ${IRSSI->authors}</div>
+  </body>
+  <script type="text/javascript">
+      $(function() {
+          Site.fetch(); /* Start the load JSON cycle */
+          $("#refresh").click(Site.fetch);
+      });
+  </script>
+</html>
 EOF
     close(FILE) or return $!;
     return undef;
@@ -288,7 +418,7 @@ sub write_json_file {
     foreach (@items) {
         my $timestamp = strftime('%Y-%m-%d %H:%M%Z', localtime $_->{time});
         print FILE
-        "{\"time\":\"$timestamp\",\"target\":\"$_->{target}\",\"message\":\"$_->{pre_url}<a href='"
+        "{\"time\":\"$timestamp\",\"nick\":\"$_->{target}\",\"message\":\"$_->{pre_url}<a href='"
         . HTML::Entities::encode(uri_escape($_->{url}, "^-A-Za-z0-9./:")) . "'>"
         . HTML::Entities::encode($_->{url}) . "</a>$_->{post_url}\"}"
             or return $!;
