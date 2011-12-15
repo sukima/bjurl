@@ -496,6 +496,9 @@ EOF
   return undef;
 }
 
+sub clean_site_files {
+}
+
 sub url {
   my ($args, $server, $item) = @_;
   my $command = Irssi::settings_get_str('browse_command');
@@ -503,7 +506,15 @@ sub url {
   if ($args ne '') {
     if (lc $args eq '-clear') {
       @items = ();
+      &update_site_files;
       Irssi::print('URL list cleared');
+    } elsif (lc $args eq '-clean') {
+      &clean_site_files;
+      Irssi::print('All HTML files removed');
+    } elsif (lc $args eq '-refresh') {
+      &clean_site_files;
+      &update_site_files;
+      Irssi::print('All HTML files rebuilt');
     } elsif ($args =~ /^[0-9]+$/) {
       if ($args > 0 && $items[$args - 1]) {
 	system(expand($command, 'u', $items[$args - 1]->{url}));
@@ -511,7 +522,7 @@ sub url {
 	Irssi::print("URL #$args not found");
       }
     } else {
-      Irssi::print('Usage: /URL [-clear|<number>]', MSGLEVEL_CLIENTERROR);
+      Irssi::print('Usage: /URL [-clear|-clean|-refresh|<number>]', MSGLEVEL_CLIENTERROR);
     }
   } else {
     if (@items) {
