@@ -3,13 +3,8 @@ Given /^the static file was created$/ do
 end
 
 When /^the user enters the command "([^"]*)"$/ do |arg1|
-  if arg1 == "/url refresh"
-    run_simple(unescape("perl -I../.. ../../tester.pl refresh_site_files"))
-  elsif arg1 == "/url clean"
-    run_simple(unescape("perl -I../.. ../../tester.pl clean_site_files"))
-  else
-    pending
-  end
+    arg = arg1.split(" ")[1]
+    run_simple(unescape("perl -I../.. ../../tester.pl url #{arg}"))
 end
 
 Given /^the webapp was created$/ do

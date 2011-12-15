@@ -9,7 +9,7 @@ Feature: rebuild html
             | url_use_webapp    | OFF       |
             | url_html_location | test.html |
         And the static file was created
-        When the user enters the command "/url refresh"
+        When the user enters the command "/url -refresh"
         Then a file named "test.html" should exist
         And the file "test.html" should not contain "test_static_file"
 
@@ -19,7 +19,7 @@ Feature: rebuild html
             | url_use_webapp    | ON        |
             | url_html_location | test      |
         And the webapp was created
-        When the user enters the command "/url refresh"
+        When the user enters the command "/url -refresh"
         Then a directory named "test" should exist
         And a file named "test/index.html" should exist
         And a file named "test/style.css" should exist
