@@ -119,6 +119,13 @@ sub push_items {
     push @items, @_;
 }
 
+sub find_path {
+  my ($path) = glob Irssi::settings_get_str('url_html_location');
+  $path =~ s+/$++; # Remove trailing slashes if any
+  $path = "${path}/index.html" if (!Irssi::settings_get_bool('url_use_webapp') && -d $path);
+  return $path;
+}
+
 sub split_and_insert {
     my ($target, $text, $stripped) = @_;
 
@@ -208,8 +215,7 @@ sub print_text {
 }
 
 sub update_site_files {
-  my ($path) = glob Irssi::settings_get_str('url_html_location'); 
-  $path =~ s+/$++; # Remove trailing slashes if any
+  my ($path) = &find_path;
   if (Irssi::settings_get_bool('url_use_webapp')) {
       mkdir $path if (! -e $path);
       if (! -d $path) {
@@ -245,7 +251,6 @@ sub update_site_files {
       }
       $path = $html;
   } else {
-      $path = "${path}/index.html" if (-d $path);
       if (my $error = write_static_file($path)) {
           Irssi::print("Unable to write $path: $error", MSGLEVEL_CLIENTERROR);
           return 0;
