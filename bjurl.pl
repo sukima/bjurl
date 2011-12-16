@@ -337,7 +337,7 @@ sub write_js_file {
     my $file = shift;
     open(FILE, ">$file") or return $!;
     print FILE <<'EOF' or return $!;
-var Site = { data: [ ], size: 0, running: false, timmer: null, error_msg: "" };
+var Site = { refresh: 30000, data: [ ], size: 0, running: false, timmer: null, error_msg: "" };
 Site.show_error = function() {
     if (Site.error_msg != "") {
         $("#error").html("<span class='error_msg'>"+Site.error_msg+"</span>").show();
@@ -373,7 +373,7 @@ Site.populate = function()  {
     Site.show_error();
 };
 Site.continueCycle = function() {
-    Site.timmer = setTimeout(Site.fetch, 30000); /* 30 seconds */
+    Site.timmer = setTimeout(Site.fetch, Site.refresh);
 };
 Site.success = function(d) {
     Site.data = d;
