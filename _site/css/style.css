@@ -1,0 +1,64 @@
+body {
+    text-align: center;
+    margin: 5px;
+    padding: 5px;
+    background: #fff;
+    color: #000;
+}
+#container { margin: auto; }
+.title { font-family: "MolotRegular", Arial, sans-serif; }
+#error {
+    background-color: red;
+    margin: 0px 0px 20px 0px;
+    padding: 5px;
+}
+.last-update {
+    font-style: italic;
+    font-weight: normal;
+}
+#url-list {
+    text-align: left;
+    padding: 5px 0px;
+    border: 3px solid #000;
+    background-color: #4DC9FF;
+}
+.url-item {
+    border: 0px;
+    margin: 0px;
+    padding: 5px 10px;
+}
+.odd { background-color: #4DC9FF; }
+.even { background-color: #00A4EB; }
+.time {
+    font-size: 0.8em;
+    font-style: italic;
+}
+.nick { font-weight: bold; }
+.message a { font-weight: bold; }
+a { color: #000; }
+#footer {
+    margin-top: 20px;
+    font-size: 0.8em;
+}
+@media only screen and (min-width: 320px) {
+    #container { width: 300px; }
+}
+@media only screen and (min-width: 480px) {
+    #container { width: 460px; }
+}
+@media only screen and (min-width: 600px) {
+    #container { width: 580px; }
+    .title {
+        text-shadow:5px 5px 5px #333333;
+        -moz-text-shadow:5px 5px 5px #333333;
+        -webkit-text-shadow:5px 5px 5px #333333;
+    }
+    #error, #url-list {
+        border-radius: 10px;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        box-shadow:5px 5px 5px #333333;
+        -moz-box-shadow:5px 5px 5px #333333;
+        -webkit-box-shadow:5px 5px 5px #333333;
+    }
+}
