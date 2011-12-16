@@ -169,7 +169,7 @@ Site.fetch = function() {
         d.unshift(Site.random_posting());
         d.unshift(Site.random_posting());
         Site.data = d;
-        setTimeout(Site.init_demo, 3000);
+        setTimeout(Site.init_demo, 2000);
     }
     return false;
 };
