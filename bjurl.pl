@@ -290,13 +290,13 @@ body {
 .url-item {
     border: 0px;
     margin: 0px;
-    padding: 5px 2px;
+    padding: 5px 10px;
 }
 .odd { background-color: #4DC9FF; }
 .even { background-color: #00A4EB; }
 .time {
-    float: left;
-    margin: 0px 20px;
+    font-size: 0.8em;
+    font-style: italic;
 }
 .nick { font-weight: bold; }
 .message a { font-weight: bold; }
@@ -355,7 +355,7 @@ Site.populate = function()  {
     for (var i=Site.size; i < Site.data.length; i++)  {
         evenodd = (i%2==0) ? "even" : "odd";
         $("<div class=\"url-item "+ evenodd +"\">"+
-            "<span class=\"time\">"+ Site.data[i].time +"</span> "+
+            "<div class=\"time\">"+ Site.data[i].time +"</div>"+
             "<span class=\"nick\">"+ Site.data[i].nick +":</span> "+
             "<span class=\"message\">"+ Site.data[i].message +"</span></div>")
             .hide()
