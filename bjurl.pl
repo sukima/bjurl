@@ -337,7 +337,7 @@ sub write_js_file {
     my $file = shift;
     open(FILE, ">$file") or return $!;
     print FILE <<'EOF' or return $!;
-var Site = { data: [ ], size: 0, running: false, timmer: null, error_msg: "" };
+var Site = { data: [ ], size: 0, running: false, timer: null, error_msg: "" };
 Site.show_error = function() {
     if (Site.error_msg != "") {
         $("#error").html("<span class='error_msg'>"+Site.error_msg+"</span>").show();
@@ -373,7 +373,7 @@ Site.populate = function()  {
     Site.show_error();
 };
 Site.continueCycle = function() {
-    Site.timmer = setTimeout(Site.fetch, 30000); /* 30 seconds */
+    Site.timer = setTimeout(Site.fetch, 30000); /* 30 seconds */
 };
 Site.success = function(d) {
     Site.data = d;
@@ -393,9 +393,9 @@ Site.clear = function() {
     return false;
 };
 Site.fetch = function()  {
-    if (Site.timmer !== null) {
-        clearTimeout(Site.timmer);
-        Site.timmer = null;
+    if (Site.timer !== null) {
+        clearTimeout(Site.timer);
+        Site.timer = null;
     }
     $.ajax({
         url: "urls.json",
