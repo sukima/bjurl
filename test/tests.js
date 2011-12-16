@@ -1,18 +1,16 @@
-// Helper function buildJSONObject() {{{
-var buildJSONObject = function(text) {
+// Helper function buildData() {{{
+var buildData= function(text) {
     var a;
-    var json = '[';
+    var d = [ ];
     if (typeof text == "array") {
         a = text;
     } else {
         a = [ text ];
     }
     for (var i=0; i < a.length; i++) {
-        json = json + '{"time":"timestamp","nick":"nickname","message":"' + a[i] + '"}';
-        if (i<a.length-1) { json = json + ','; }
+        d.push({ time: "timestamp", nick: "nickname", message: a[i] });
     }
-    json = json + ']';
-    return json;
+    return d;
 }; // }}}
 
 
@@ -48,6 +46,7 @@ $(document).ready(function(){
     module("populate", {
         setup: function() {
             this.update_time = $("<div/>",{id:"update-time"}).appendTo("#qunit-fixture");
+            this.nodata = $("<div/>",{id:"nodata"}).appendTo("#qunit-fixture");
             this.url_list = $("<div/>",{id:"url-list"}).appendTo("#qunit-fixture");
             $.extend(Site, { data: [ ], size: 0, running: false, timmer: null, error_msg: "" });
             this.show_error = Site.show_error;
@@ -57,13 +56,52 @@ $(document).ready(function(){
         },
         teardown: function() {
             Site.show_error = this.show_error;
+            $.extend(Site, { data: [ ], size: 0, running: false, timmer: null, error_msg: "" });
         }
     });
-    test("", function() {
+    test("First time without data", function() {
+        Site.data = [ ];
         Site.populate();
-        ok(this.show_error_called, "show_error was called");
+        ok(Site.running, "Application is in running state");
         ok(Site.update !== undefined, "Updates the timestamp");
-        ok(false, "pending");
+        ok(this.update_time.text() != "", "Time is displayed");
+        equal(Site.size, Site.data.length, "Site.size updated");
+        ok(this.nodata.is(":visible"), "#nodata is not hidden");
+        ok(this.show_error_called, "show_error was called");
+        ok($(".url-item").length == 0, "#url-list not populated");
+    });
+    test("First time with data", function() {
+        Site.data = buildData("test");
+        Site.populate();
+        ok(Site.running, "Application is in running state");
+        ok(Site.update !== undefined, "Updates the timestamp");
+        ok(this.update_time.text() != "", "Time is displayed");
+        equal(Site.size, Site.data.length, "Site.size updated");
+        ok(!this.nodata.is(":visible"), "#nodata is hidden");
+        ok(this.show_error_called, "show_error was called");
+        ok($(".url-item").length == 1, "#url-list populated");
+    });
+    test("Running state without new data", function() {
+        Site.running = true;
+        Site.populate();
+        ok(Site.update !== undefined, "Updates the timestamp");
+        ok(this.update_time.text() != "", "Time is displayed");
+        equal(Site.size, Site.data.length, "Site.size updated");
+        ok(this.nodata.is(":visible"), "#nodata is not hidden");
+        ok(this.show_error_called, "show_error was called");
+        ok($(".url-item").length == 0, "#url-list not populated");
+    });
+    test("Running state with new data", function() {
+        Site.data.push(buildData("test"));
+        Site.size = 0;
+        Site.running = true;
+        Site.populate();
+        ok(Site.update !== undefined, "Updates the timestamp");
+        ok(this.update_time.text() != "", "Time is displayed");
+        equal(Site.size, Site.data.length, "Site.size updated");
+        ok(!this.nodata.is(":visible"), "#nodata is hidden");
+        ok(this.show_error_called, "show_error was called");
+        ok($(".url-item").length == 1, "#url-list populated");
     });
 
 
