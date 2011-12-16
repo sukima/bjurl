@@ -51,6 +51,7 @@ Site.clear = function() {
     $("#nodata").css('opacity',0.0)
         .slideDown('slow')
         .animate({opacity: 1.0});
+    return false;
 };
 Site.fetch = function()  {
     if (Site.timmer !== null) {
@@ -64,4 +65,5 @@ Site.fetch = function()  {
         success: Site.success,
         error: Site.error
     });
+    return false;
 };
