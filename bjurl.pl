@@ -4,7 +4,7 @@
 use Irssi 20020121.2020 ();
 use URI::Escape;
 use HTML::Entities;
-$VERSION = "1.0";
+$VERSION = "1.1";
 %IRSSI = (
 	  authors     => 'Devin weaver',
 	  contact     => 'suki\@tritarget.org',
@@ -390,6 +390,7 @@ Site.clear = function() {
     $("#nodata").css('opacity',0.0)
         .slideDown('slow')
         .animate({opacity: 1.0});
+    return false;
 };
 Site.fetch = function()  {
     if (Site.timmer !== null) {
@@ -403,6 +404,7 @@ Site.fetch = function()  {
         success: Site.success,
         error: Site.error
     });
+    return false;
 };
 EOF
     close(FILE) or return $!;
@@ -439,7 +441,7 @@ sub write_html_file {
       $(function() {
           Site.fetch(); /* Start the load JSON cycle */
           $("#refresh").click(Site.fetch);
-          $("#clear").click(function() { Site.data = [ ]; Site.populate(); });
+          $("#clear").click(Site.clear);
       });
   </script>
 </html>
