@@ -277,7 +277,7 @@ body {
     margin: 0px 0px 20px 0px;
     padding: 5px;
 }
-.last-update {
+#update-time {
     font-style: italic;
     font-weight: normal;
 }
@@ -292,6 +292,7 @@ body {
     margin: 0px;
     padding: 5px 10px;
 }
+#nodata { text-align: center; }
 .odd { background-color: #4DC9FF; }
 .even { background-color: #00A4EB; }
 .time {
@@ -347,12 +348,13 @@ Site.show_error = function() {
 };
 Site.populate = function()  {
     var evenodd;
+    var populated = false;
     if (!Site.running || Site.data.length < Site.size) {
-        Site.size = 0;
-        $(".url-item").fadeOut("fast");
+        Site.clear();
     }
     Site.update = new Date();
     for (var i=Site.size; i < Site.data.length; i++)  {
+        populated = true;
         evenodd = (i%2==0) ? "even" : "odd";
         $("<div class=\"url-item "+ evenodd +"\">"+
             "<div class=\"time\">"+ Site.data[i].time +"</div>"+
@@ -363,10 +365,8 @@ Site.populate = function()  {
             .prependTo('#url-list')
             .slideDown('slow')
             .animate({opacity: 1.0});
-        if (Site.running) {
-            console.log(Site.data[i]);
-        }
     }
+    if (populated) { $("#nodata").hide(); }
     Site.running = true;
     Site.size = Site.data.length;
     $("#update-time").text(new Date().toLocaleString());
@@ -384,6 +384,12 @@ Site.error = function(jqXHR, textStatus, errorThrown) {
     Site.error_msg = "There was an error loading update. Try again by refreshing the entire page. "+ errorThrown;
     Site.populate();
     Site.continueCycle();
+};
+Site.clear = function() {
+    $(".url-item").remove();
+    $("#nodata").css('opacity',0.0)
+        .slideDown('slow')
+        .animate({opacity: 1.0});
 };
 Site.fetch = function()  {
     if (Site.timmer !== null) {
@@ -419,9 +425,13 @@ sub write_html_file {
       <div id="container">
         <h1 class="title">IRC URL list</h1>
         <p class="last-update">Last Update: <span id="update-time"></span>
-            [<a href="#" id="refresh">refresh</a>]</p>
+        [<a href="#" id="refresh">refresh</a>]
+        [<a href="#" id="clear">clear</a>]
+        </p>
         <div id="error" style="display:none;"></div>
-        <div id="url-list"><div class="url-item" style="text-align:center;">Loading...</div></div>
+        <div id="url-list">
+            <div id="nodata">No entries so far</div>
+        </div>
       </div>
       <div id="footer"><a href="http://github.com/sukima/bjurl" target="_blank">bjurl</a> by Devin Weaver</div>
   </body>
@@ -429,6 +439,7 @@ sub write_html_file {
       $(function() {
           Site.fetch(); /* Start the load JSON cycle */
           $("#refresh").click(Site.fetch);
+          $("#clear").click(function() { Site.data = [ ]; Site.populate(); });
       });
   </script>
 </html>
