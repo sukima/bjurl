@@ -12,7 +12,7 @@ body {
     margin: 0px 0px 20px 0px;
     padding: 5px;
 }
-.last-update {
+#update-time {
     font-style: italic;
     font-weight: normal;
 }
@@ -27,6 +27,7 @@ body {
     margin: 0px;
     padding: 5px 10px;
 }
+#nodata { text-align: center; }
 .odd { background-color: #4DC9FF; }
 .even { background-color: #00A4EB; }
 .time {

@@ -9,12 +9,13 @@ Site.show_error = function() {
 };
 Site.populate = function()  {
     var evenodd;
+    var populated = false;
     if (!Site.running || Site.data.length < Site.size) {
-        Site.size = 0;
-        $(".url-item").fadeOut("fast");
+        Site.clear();
     }
     Site.update = new Date();
     for (var i=Site.size; i < Site.data.length; i++)  {
+        populated = true;
         evenodd = (i%2==0) ? "even" : "odd";
         $("<div class=\"url-item "+ evenodd +"\">"+
             "<div class=\"time\">"+ Site.data[i].time +"</div>"+
@@ -25,10 +26,8 @@ Site.populate = function()  {
             .prependTo('#url-list')
             .slideDown('slow')
             .animate({opacity: 1.0});
-        if (Site.running) {
-            console.log(Site.data[i]);
-        }
     }
+    if (populated) { $("#nodata").hide(); }
     Site.running = true;
     Site.size = Site.data.length;
     $("#update-time").text(new Date().toLocaleString());
@@ -47,6 +46,13 @@ Site.error = function(jqXHR, textStatus, errorThrown) {
     Site.populate();
     Site.continueCycle();
 };
+Site.clear = function() {
+    $(".url-item").remove();
+    $("#nodata").css('opacity',0.0)
+        .slideDown('slow')
+        .animate({opacity: 1.0});
+    return false;
+};
 Site.fetch = function()  {
     if (Site.timmer !== null) {
         clearTimeout(Site.timmer);
@@ -59,4 +65,5 @@ Site.fetch = function()  {
         success: Site.success,
         error: Site.error
     });
+    return false;
 };
