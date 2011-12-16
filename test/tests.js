@@ -50,16 +50,14 @@ $(document).ready(function(){
             this.url_list = $("<div/>",{id:"url-list"}).appendTo("#qunit-fixture");
             $.extend(Site, { data: [ ], size: 0, running: false, timmer: null, error_msg: "" });
             this.show_error = Site.show_error;
-            this.show_error_called = false;
-            var that = this;
-            Site.show_error = function() { that.show_error_called = true; };
+            Site.show_error = function() { ok(true, "show_error was called"); };
         },
         teardown: function() {
             Site.show_error = this.show_error;
             $.extend(Site, { data: [ ], size: 0, running: false, timmer: null, error_msg: "" });
         }
     });
-    test("First time without data", function() {
+    test("First time without data", 7, function() {
         Site.data = [ ];
         Site.populate();
         ok(Site.running, "Application is in running state");
@@ -67,10 +65,9 @@ $(document).ready(function(){
         ok(this.update_time.text() != "", "Time is displayed");
         equal(Site.size, Site.data.length, "Site.size updated");
         ok(this.nodata.is(":visible"), "#nodata is not hidden");
-        ok(this.show_error_called, "show_error was called");
         ok($(".url-item").length == 0, "#url-list not populated");
     });
-    test("First time with data", function() {
+    test("First time with data", 7, function() {
         Site.data = buildData("test");
         Site.populate();
         ok(Site.running, "Application is in running state");
@@ -78,20 +75,18 @@ $(document).ready(function(){
         ok(this.update_time.text() != "", "Time is displayed");
         equal(Site.size, Site.data.length, "Site.size updated");
         ok(!this.nodata.is(":visible"), "#nodata is hidden");
-        ok(this.show_error_called, "show_error was called");
         ok($(".url-item").length == 1, "#url-list populated");
     });
-    test("Running state without new data", function() {
+    test("Running state without new data", 6, function() {
         Site.running = true;
         Site.populate();
         ok(Site.update !== undefined, "Updates the timestamp");
         ok(this.update_time.text() != "", "Time is displayed");
         equal(Site.size, Site.data.length, "Site.size updated");
         ok(this.nodata.is(":visible"), "#nodata is not hidden");
-        ok(this.show_error_called, "show_error was called");
         ok($(".url-item").length == 0, "#url-list not populated");
     });
-    test("Running state with new data", function() {
+    test("Running state with new data", 6, function() {
         Site.data.push(buildData("test"));
         Site.size = 0;
         Site.running = true;
@@ -100,28 +95,30 @@ $(document).ready(function(){
         ok(this.update_time.text() != "", "Time is displayed");
         equal(Site.size, Site.data.length, "Site.size updated");
         ok(!this.nodata.is(":visible"), "#nodata is hidden");
-        ok(this.show_error_called, "show_error was called");
         ok($(".url-item").length == 1, "#url-list populated");
     });
 
 
-    // Module continueCycle {{{1
-    module("continueCycle", {
+    // Module timeout functions {{{1
+    module("Timeout functions", {
         setup: function() {
             var that = this;
             this.fetch = Site.fetch;
-            this.fetch_called = false;
+            this.populate = Site.populate;
             Site.fetch = function() { ok(true, "Site.fetch called from timeout"); start(); };
+            Site.populate = function() { ok(true, "Site.populate called from timeout"); start(); };
+            Site.populate
             Site.refresh = 0;
         },
         teardown: function() {
             clearTimeout(Site.timer);
             Site.fetch = this.fetch;
+            Site.populate = this.populate;
             Site.timer = null;
             Site.refresh = 30000;
         }
     });
-    asyncTest("continues the refresh loop", function() {
+    asyncTest("continues the refresh loop", 3, function() {
         Site.continueCycle();
         ok(Site.timer !== undefined, "Site.timer is not undefined");
         ok(Site.timer !== null, "Site.timer is not null");
