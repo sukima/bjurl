@@ -18,15 +18,20 @@
           </div>
           <h1 class="title">Demo</h1>
           <p class="last-update">Last Update: <span id="update-time"></span>
-          [<a href="#" id="refresh">refresh</a>]</p>
+          [<a href="#" id="refresh">refresh</a>]
+          [<a href="#" id="clear">clear</a>]
+          </p>
           <div id="error" style="display:none;"></div>
-          <div id="url-list"><div class="url-item" style="text-align:center;">Loading...</div></div>
+          <div id="url-list">
+              <div id="nodata">No entries so far</div>
+          </div>
       </div>
       <div id="footer"><a href="http://github.com/sukima/bjurl" target="_blank">bjurl</a> by Devin Weaver</div>
       <script type="text/javascript">
           $(function() {
               Site.fetch(); /* Start the load JSON cycle */
               $("#refresh").click(Site.fetch);
+              $("#clear").click(Site.clear);
           });
       </script>
   </body>
