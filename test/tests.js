@@ -105,6 +105,29 @@ $(document).ready(function(){
     });
 
 
+    // Module continueCycle {{{1
+    module("continueCycle", {
+        setup: function() {
+            var that = this;
+            this.fetch = Site.fetch;
+            this.fetch_called = false;
+            Site.fetch = function() { ok(true, "Site.fetch called from timeout"); start(); };
+            Site.refresh = 0;
+        },
+        teardown: function() {
+            clearTimeout(Site.timer);
+            Site.fetch = this.fetch;
+            Site.timer = null;
+            Site.refresh = 30000;
+        }
+    });
+    asyncTest("continues the refresh loop", function() {
+        Site.continueCycle();
+        ok(Site.timer !== undefined, "Site.timer is not undefined");
+        ok(Site.timer !== null, "Site.timer is not null");
+    });
+
+
 // }}}1
 });
 /* vim:set fdm=marker: */
