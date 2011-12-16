@@ -49,9 +49,20 @@ $(document).ready(function(){
         setup: function() {
             this.update_time = $("<div/>",{id:"update-time"}).appendTo("#qunit-fixture");
             this.url_list = $("<div/>",{id:"url-list"}).appendTo("#qunit-fixture");
+            $.extend(Site, { data: [ ], size: 0, running: false, timmer: null, error_msg: "" });
+            this.show_error = Site.show_error;
+            this.show_error_called = false;
+            var that = this;
+            Site.show_error = function() { that.show_error_called = true; };
+        },
+        teardown: function() {
+            Site.show_error = this.show_error;
         }
     });
     test("", function() {
+        Site.populate();
+        ok(this.show_error_called, "show_error was called");
+        ok(Site.update !== undefined, "Updates the timestamp");
         ok(false, "pending");
     });
 
