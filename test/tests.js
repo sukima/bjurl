@@ -103,7 +103,7 @@ $(document).ready(function(){
             Site.fetch = function() { ok(true, "Site.fetch called from timeout"); start(); };
             Site.populate = function() { ok(true, "Site.populate called from timeout"); start(); };
             Site.populate
-            Site.refresh = 0;
+            Site.refresh = 1;
         },
         teardown: function() {
             clearTimeout(Site.timer);
@@ -113,7 +113,7 @@ $(document).ready(function(){
             Site.refresh = 30000;
         }
     });
-    asyncTest("continues the refresh loop", 3, function() {
+    asyncTest("continueCycle", 3, function() {
         Site.continueCycle();
         ok(Site.timer !== undefined, "Site.timer is not undefined");
         ok(Site.timer !== null, "Site.timer is not null");
