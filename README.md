@@ -1,4 +1,35 @@
-Copyright &copy; 2011 Devin Weaver. All Rights Reserved.
+# bjurl
+
+This is an [irssi][1] script that grabs the URLs printed in any window and logs
+it to a web site.
+
+To see this in action see the [Demo](http://sukima.github.com/bjurl/).
+
+[1]: http://irssi.org/
+
+## Acknowledgements
+
+This script is a direct fork of the [Better URL (burl)][2] script by **Hugo
+Haas** and much of the same code is still there.
+
+[2]: http://larve.net/people/hugo/2003/scratchpad/IrssiUrlGrabbing.html
+
+## Installation
+
+Simply [download][3] place the `bjurl.pl` file into your `.irssi/scripts`
+directory. If you want to load the script every time irssi starts link to it
+in your `.irssi/scripts/autoload`.
+
+[3]: https://raw.github.com/sukima/bjurl/master/bjurl.pl
+
+## Usage
+
+## Testing
+
+#### Why would I use cucumber with an irssi perl script?
+
+## License
+Copyright &copy; 2011 Devin Weaver. All Rights Reserved.  
 Copyright &copy; 2003 Hugo Haas. All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without
