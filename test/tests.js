@@ -43,13 +43,13 @@ $(document).ready(function(){
             this.update_time = $("<div/>",{id:"update-time"}).appendTo("#qunit-fixture");
             this.nodata = $("<div/>",{id:"nodata"}).appendTo("#qunit-fixture");
             this.url_list = $("<div/>",{id:"url-list"}).appendTo("#qunit-fixture");
-            $.extend(Site, { data: [ ], size: 0, running: false, timmer: null, error_msg: "" });
+            $.extend(Site, { data: [ ], size: 0, running: false, timer: null, error_msg: "" });
             this.show_error = Site.show_error;
             Site.show_error = function() { ok(true, "show_error was called"); };
         },
         teardown: function() {
             Site.show_error = this.show_error;
-            $.extend(Site, { data: [ ], size: 0, running: false, timmer: null, error_msg: "" });
+            $.extend(Site, { data: [ ], size: 0, running: false, timer: null, error_msg: "" });
         }
     });
     test("First time without data", 7, function() {
@@ -135,11 +135,30 @@ $(document).ready(function(){
             this.nodata.hide();
         }
     });
-    test("Clears the list of data", function() {
+    test("Clears the list of data", 3, function() {
         var ret = Site.clear();
         ok(!ret, "Function returns false");
         ok($(".url-item").length == 0, "Item removed");
         ok(this.nodata.is(":visible"), "#nodata is visible");
+    });
+
+
+    // Module fetch
+    module("fetch", {
+        setup: function() {
+            this.ajax = $.ajax;
+            $.ajax = function() { ok(true, "$.ajax called"); };
+            $.extend(Site, { data: [ ], size: 0, running:true, timer: "test_value", error_msg: "" });
+        },
+        teardown: function() {
+            $.ajax = this.ajax;
+            $.extend(Site, { data: [ ], size: 0, running: false, timer: null, error_msg: "" });
+        }
+    });
+    test("Prepare and run AJAX fetch", 3, function() {
+        var ret = Site.fetch();
+        ok(Site.timer === null, "Resets Site.timer");
+        ok(!ret, "Returns false");
     });
 
 
