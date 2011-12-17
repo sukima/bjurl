@@ -127,6 +127,22 @@ $(document).ready(function(){
     });
 
 
+    // Module clear {{{1
+    module("clear", {
+        setup: function() {
+            this.item = $("<div/>", {class:"url-item"}).appendTo("#qunit-fixture");
+            this.nodata = $("<div/>", {id:"nodata"}).appendTo("#qunit-fixture");
+            this.nodata.hide();
+        }
+    });
+    test("Clears the list of data", function() {
+        var ret = Site.clear();
+        ok(!ret, "Function returns false");
+        ok($(".url-item").length == 0, "Item removed");
+        ok(this.nodata.is(":visible"), "#nodata is visible");
+    });
+
+
 // }}}1
 });
 /* vim:set fdm=marker: */
