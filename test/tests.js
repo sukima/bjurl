@@ -118,6 +118,12 @@ $(document).ready(function(){
         ok(Site.timer !== undefined, "Site.timer is not undefined");
         ok(Site.timer !== null, "Site.timer is not null");
     });
+    asyncTest("success", 3, function() {
+        var d = buildData(["test","test2"]);
+        Site.success(d);
+        console.log(Site.data);
+        equal(Site.data.length, 2, "Site.data updated");
+    });
 
 
 // }}}1
