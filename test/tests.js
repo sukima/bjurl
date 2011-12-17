@@ -101,15 +101,14 @@ $(document).ready(function(){
             this.fetch = Site.fetch;
             this.populate = Site.populate;
             Site.fetch = function() { ok(true, "Site.fetch called from timeout"); start(); };
-            Site.populate = function() { ok(true, "Site.populate called from timeout"); start(); };
-            Site.populate
+            Site.populate = function() { ok(true, "Site.populate called from timeout"); };
             Site.refresh = 1;
         },
         teardown: function() {
             clearTimeout(Site.timer);
+            Site.timer = null;
             Site.fetch = this.fetch;
             Site.populate = this.populate;
-            Site.timer = null;
             Site.refresh = 30000;
         }
     });
@@ -119,9 +118,7 @@ $(document).ready(function(){
         ok(Site.timer !== null, "Site.timer is not null");
     });
     asyncTest("success", 3, function() {
-        var d = buildData(["test","test2"]);
-        Site.success(d);
-        console.log(Site.data);
+        Site.success(buildData(["test","test2"])); // Calls populate, continueCycle->fetch
         equal(Site.data.length, 2, "Site.data updated");
     });
 
