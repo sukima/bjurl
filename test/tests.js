@@ -121,6 +121,10 @@ $(document).ready(function(){
         Site.success(buildData(["test","test2"])); // Calls populate, continueCycle->fetch
         equal(Site.data.length, 2, "Site.data updated");
     });
+    asyncTest("error", 3, function() {
+        Site.error(null, null, "test error"); // Calls populate, continueCycle->fetch
+        ok(Site.error_msg != "", "Site.error_msg populated");
+    });
 
 
 // }}}1
