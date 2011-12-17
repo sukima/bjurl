@@ -1,14 +1,9 @@
 // Helper function buildData() {{{
-var buildData= function(text) {
-    var a;
+var buildData= function(textarray) {
     var d = [ ];
-    if (typeof text == "array") {
-        a = text;
-    } else {
-        a = [ text ];
-    }
-    for (var i=0; i < a.length; i++) {
-        d.push({ time: "timestamp", nick: "nickname", message: a[i] });
+    if (!$.isArray(textarray)) { textarray = [ textarray ]; }
+    for (var i=0; i < textarray.length; i++) {
+        d.push({ time: "timestamp", nick: "nickname", message: textarray[i] });
     }
     return d;
 }; // }}}
