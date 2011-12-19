@@ -1,5 +1,6 @@
+var bjurlTest = { permsCheckReturn: 0 };
 // Helper function buildData() {{{
-var buildData= function(textarray) {
+bjurlTest.buildData= function(textarray) {
     var d = [ ];
     if (!$.isArray(textarray)) { textarray = [ textarray ]; }
     for (var i=0; i < textarray.length; i++) {
@@ -63,7 +64,7 @@ $(document).ready(function(){
         ok($(".url-item").length == 0, "#url-list not populated");
     });
     test("First time with data", 7, function() {
-        Site.data = buildData("test");
+        Site.data = bjurlTest.buildData("test");
         Site.populate();
         ok(Site.running, "Application is in running state");
         ok(Site.update !== undefined, "Updates the timestamp");
@@ -82,7 +83,7 @@ $(document).ready(function(){
         ok($(".url-item").length == 0, "#url-list not populated");
     });
     test("Running state with new data", 6, function() {
-        Site.data.push(buildData("test"));
+        Site.data.push(bjurlTest.buildData("test"));
         Site.size = 0;
         Site.running = true;
         Site.populate();
@@ -118,7 +119,7 @@ $(document).ready(function(){
         ok(Site.timer !== null, "Site.timer is not null");
     });
     asyncTest("success", 3, function() {
-        Site.success(buildData(["test","test2"])); // Calls populate, continueCycle->fetch
+        Site.success(bjurlTest.buildData(["test","test2"])); // Calls populate, continueCycle->fetch
         equal(Site.data.length, 2, "Site.data updated");
     });
     asyncTest("error", 3, function() {
