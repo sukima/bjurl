@@ -1,5 +1,5 @@
 var bjurlTest = { permsCheckReturn: 0 };
-// Helper function buildData() {{{
+// Helper function buildData() {{{1
 bjurlTest.buildData= function(textarray) {
     var d = [ ];
     if (!$.isArray(textarray)) { textarray = [ textarray ]; }
@@ -7,7 +7,24 @@ bjurlTest.buildData= function(textarray) {
         d.push({ time: "timestamp", nick: "nickname", message: textarray[i] });
     }
     return d;
-}; // }}}
+};
+
+// Mock for desktop notifications {{{1
+bjurlTest.notifyObj = {
+    show: function() { ok(true, "notification show called"); },
+    cancel: function() { return; }
+};
+
+// Will not restore webkitNotifications. No need in test environment.
+// bjurlTest.notify = window.webkitNotifications;
+window.webkitNotifications = { };
+window.webkitNotifications.prototype = {
+    requestPermission: function(cb) { ok(true, "requestPermission called"); cb(); },
+    checkPermission: function() { ok(true, "checkPermission called"); return bjurlTest.permsCheckReturn; },
+    createNotification: function() { ok(true, "createNotification called"); return bjurlTest.notifyObj; },
+    createHTMLNotification: function() { ok(true, "createHTMLNotification called"); return bjurlTest.notifyObj; }
+};
+// }}}1
 
 
 $(document).ready(function(){
@@ -160,6 +177,22 @@ $(document).ready(function(){
         var ret = Site.fetch();
         ok(Site.timer === null, "Resets Site.timer");
         ok(!ret, "Returns false");
+    });
+
+
+    // Module desktop notifications {{{1
+    module("Desktop Notifications", {
+        setup: function() {
+            this.data = bjurlTest.buildData("test");
+        }
+    });
+    test("Without permission", 5, function() {
+        bjurlTest.permsCheckReturn = 1;
+        Site.notify(this.data[0]);
+    });
+    test("With permission", 4, function() {
+        bjurlTest.permsCheckReturn = 0;
+        Site.notify(this.data[0]);
     });
 
 
