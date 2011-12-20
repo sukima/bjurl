@@ -28,10 +28,21 @@ window.webkitNotifications.prototype = {
 
 
 $(document).ready(function(){
+    var missing_libs = [ ];
     if (Site) {
         // Check that the main script is loaded
         // If so we no longer need the warning
         $("#testwarning").remove();
+    } else { return; }
+    if (typeof jQuery == 'undefined') { missing_libs.push({lib:"jQuery",url:"http://code.jquery.com/jquery-latest.js"}); }
+    if (typeof QUnit == 'undefined') { missing_libs.push({lib:"Qunit",url:"http://code.jquery.com/qunit/git/qunit.js"}); }
+    if (typeof sinon == 'undefined') { missing_libs.push({lib:"Sinon",url:"http://sinonjs.org/release/sinon-1.2.0.js"}); }
+    if (missing_libs.length == 0) { $("#libwarning").remove(); }
+    else {
+        for (var i=0; i<missing_libs.length; i++) {
+            $("#libs-list").append("<p><b>"+missing_libs[i].lib+"</b> - <span class=\"script-location\">"+missing_libs[i].url+"</span></p>");
+        }
+        return;
     }
 
 

@@ -5,10 +5,13 @@
         <script src="http://code.jquery.com/jquery-latest.js"></script>
         <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
         <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
+        <script src="http://sinonjs.org/releases/sinon-1.2.0.js" type="text/javascript"></script>
+        <script src="http://sinonjs.org/releases/sinon-ie-1.2.0.js" type="text/javascript"></script>
+        <script src="http://sinonjs.org/releases/sinon-qunit-1.0.0.js" type="text/javascript"></script>
         <script src="../tmp/aruba/test/script.js" type="text/javascript"></script>
         <script src="tests.js" type="text/javascript"></script>
         <style type="text/css">
-            #testwarning {
+            .warning {
                 font-size: 1.2em;
                 background-color: red;
                 text-align: center;
@@ -18,14 +21,19 @@
                 -moz-border-radius: 15px;
                 -webkit-border-radius: 15px;
             }
-            #testwarning .script-location { font-size: 0.8em; }
+            .warning .script-location { font-size: 0.8em; }
         </style>
     </head>
     <body>
-        <div id="testwarning">
+        <div id="testwarning" class="warning">
             <p>Unable to load script file. Has it been built yet?</p>
             <p>Try running <code>test/run_tests.sh</code> first.</p>
             <p class="script-location">(Script file should be <code>../tmp/aruba/test/script.js</code> relative to this file)</p>
+        </div>
+        <div id="libwarning" class="warning">
+            <p>Unable to load the following libraries:</p>
+            <div id="libs-list"></div>
+            <p>Are you connected to the internet?</p>
         </div>
         <div id="testbox">
             <h1 id="qunit-header">QUnit test for webapp JavaScript</h1>
