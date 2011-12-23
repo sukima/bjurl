@@ -7,19 +7,19 @@ Site.show_error = function() {
     }
     Site.error_msg = "";
 };
-Site.notify = function(item) {
+Site.notify = function(html) {
     if (!window.webkitNotifications) { return; }
     if (window.webkitNotifications.checkPermission() > 0) {
         window.webkitNotifications.requestPermission(Site.notify);
     } else {
-        var popup = window.webkitNotifications.createHTMLNotification(item.message);
+        var popup = window.webkitNotifications.createNotification(html);
         popup.show();
 
         window.setTimeout(popup.cancel, 15000);
     }
 }
 Site.populate = function()  {
-    var evenodd;
+    var evenodd, item;
     var populated = false;
     if (!Site.running || Site.data.length < Site.size) {
         Site.clear();
@@ -28,7 +28,7 @@ Site.populate = function()  {
     for (var i=Site.size; i < Site.data.length; i++)  {
         populated = true;
         evenodd = (i%2==0) ? "even" : "odd";
-        $("<div class=\"url-item "+ evenodd +"\">"+
+        item = $("<div class=\"url-item "+ evenodd +"\">"+
             "<div class=\"time\">"+ Site.data[i].time +"</div>"+
             "<span class=\"nick\">"+ Site.data[i].nick +":</span> "+
             "<span class=\"message\">"+ Site.data[i].message +"</span></div>")
@@ -37,7 +37,7 @@ Site.populate = function()  {
             .prependTo('#url-list')
             .slideDown('slow')
             .animate({opacity: 1.0});
-        if (Site.running) { Site.notify(Site.data[i]); }
+        if (Site.running) { Site.notify(item); }
     }
     if (populated) { $("#nodata").hide(); }
     Site.running = true;
