@@ -73,15 +73,13 @@ $(document).ready(function(){
             this.nodata = $("<div/>",{id:"nodata"}).appendTo("#qunit-fixture");
             this.url_list = $("<div/>",{id:"url-list"}).appendTo("#qunit-fixture");
             $.extend(Site, { data: [ ], size: 0, running: false, timer: null, error_msg: "" });
-            this.show_error = Site.show_error;
-            Site.show_error = function() { ok(true, "show_error was called"); };
         },
         teardown: function() {
-            Site.show_error = this.show_error;
             $.extend(Site, { data: [ ], size: 0, running: false, timer: null, error_msg: "" });
         }
     });
-    test("First time without data", 7, function() {
+    test("First time without data", function() {
+        this.stub(Site,"show_error");
         Site.data = [ ];
         Site.populate();
         ok(Site.running, "Application is in running state");
@@ -90,8 +88,10 @@ $(document).ready(function(){
         equal(Site.size, Site.data.length, "Site.size updated");
         ok(this.nodata.is(":visible"), "#nodata is not hidden");
         ok($(".url-item").length == 0, "#url-list not populated");
+        ok(Site.show_error.called, "show_error() called");
     });
-    test("First time with data", 7, function() {
+    test("First time with data", function() {
+        this.stub(Site,"show_error");
         Site.data = bjurlTest.buildData("test");
         Site.populate();
         ok(Site.running, "Application is in running state");
@@ -100,8 +100,10 @@ $(document).ready(function(){
         equal(Site.size, Site.data.length, "Site.size updated");
         ok(!this.nodata.is(":visible"), "#nodata is hidden");
         ok($(".url-item").length == 1, "#url-list populated");
+        ok(Site.show_error.called, "show_error() called");
     });
-    test("Running state without new data", 6, function() {
+    test("Running state without new data", function() {
+        this.stub(Site,"show_error");
         Site.running = true;
         Site.populate();
         ok(Site.update !== undefined, "Updates the timestamp");
@@ -109,8 +111,10 @@ $(document).ready(function(){
         equal(Site.size, Site.data.length, "Site.size updated");
         ok(this.nodata.is(":visible"), "#nodata is not hidden");
         ok($(".url-item").length == 0, "#url-list not populated");
+        ok(Site.show_error.called, "show_error() called");
     });
-    test("Running state with new data", 6, function() {
+    test("Running state with new data", function() {
+        this.stub(Site,"show_error");
         Site.data.push(bjurlTest.buildData("test"));
         Site.size = 0;
         Site.running = true;
@@ -120,39 +124,42 @@ $(document).ready(function(){
         equal(Site.size, Site.data.length, "Site.size updated");
         ok(!this.nodata.is(":visible"), "#nodata is hidden");
         ok($(".url-item").length == 1, "#url-list populated");
+        ok(Site.show_error.called, "show_error() called");
     });
 
 
     // Module timeout functions {{{1
     module("Timeout functions", {
         setup: function() {
-            var that = this;
-            this.fetch = Site.fetch;
-            this.populate = Site.populate;
-            Site.fetch = function() { ok(true, "Site.fetch called from timeout"); start(); };
-            Site.populate = function() { ok(true, "Site.populate called from timeout"); };
             Site.refresh = 1;
         },
         teardown: function() {
             clearTimeout(Site.timer);
             Site.timer = null;
-            Site.fetch = this.fetch;
-            Site.populate = this.populate;
             Site.refresh = 30000;
         }
     });
-    asyncTest("continueCycle", 3, function() {
+    test("continueCycle", function() {
+        this.stub(jQuery, "ajax", Site.success);
+        this.stub(Site, "populate");
         Site.continueCycle();
         ok(Site.timer !== undefined, "Site.timer is not undefined");
         ok(Site.timer !== null, "Site.timer is not null");
+        this.clock.tick(10);
+        ok(jQuery.ajax.called, "ajax() called");
+        ok(Site.populate.called, "populate() called");
     });
-    asyncTest("success", 3, function() {
+    test("success", function() {
+        this.stub(Site, "populate");
         Site.success(bjurlTest.buildData(["test","test2"])); // Calls populate, continueCycle->fetch
         equal(Site.data.length, 2, "Site.data updated");
+        ok(Site.populate.called, "populate() called");
     });
-    asyncTest("error", 3, function() {
+    test("error", function() {
+        this.stub(Site, "populate");
         Site.error(null, null, "test error"); // Calls populate, continueCycle->fetch
         ok(Site.error_msg != "", "Site.error_msg populated");
+        ok(Site.populate.called, "populate() called");
     });
 
 
@@ -164,7 +171,7 @@ $(document).ready(function(){
             this.nodata.hide();
         }
     });
-    test("Clears the list of data", 3, function() {
+    test("Clears the list of data", function() {
         var ret = Site.clear();
         ok(!ret, "Function returns false");
         ok($(".url-item").length == 0, "Item removed");
@@ -175,19 +182,18 @@ $(document).ready(function(){
     // Module fetch
     module("fetch", {
         setup: function() {
-            this.ajax = $.ajax;
-            $.ajax = function() { ok(true, "$.ajax called"); };
             $.extend(Site, { data: [ ], size: 0, running:true, timer: "test_value", error_msg: "" });
         },
         teardown: function() {
-            $.ajax = this.ajax;
             $.extend(Site, { data: [ ], size: 0, running: false, timer: null, error_msg: "" });
         }
     });
-    test("Prepare and run AJAX fetch", 3, function() {
+    test("Prepare and run AJAX fetch", function() {
+        this.stub(jQuery, "ajax");
         var ret = Site.fetch();
         ok(Site.timer === null, "Resets Site.timer");
         ok(!ret, "Returns false");
+        ok(jQuery.ajax.called, "$.ajax() called");
     });
 
 
@@ -197,13 +203,34 @@ $(document).ready(function(){
             this.data = bjurlTest.buildData("test");
         }
     });
-    test("Without permission", 5, function() {
-        bjurlTest.permsCheckReturn = 1;
+    test("Without permission", function() {
+        var notifyObj = { show: this.stub(), cancel: this.stub() };
+        this.stub(window.webkitNotifications, "requestPermission");
+        this.stub(window.webkitNotifications, "checkPermission");
+        this.stub(window.webkitNotifications, "createNotification");
+        this.stub(window.webkitNotifications, "createHTMLNotification");
+        window.webkitNotifications.createNotification.returns(notifyObj);
+        window.webkitNotifications.createHTMLNotification.returns(notifyObj);
+        window.webkitNotifications.checkPermission.returns(1);
         Site.notify(this.data[0]);
+        ok(window.webkitNotifications.checkPermission.called, "checkPermission called");
+        ok(window.webkitNotifications.requestPermission.called, "requestPermission called");
+        ok(window.webkitNotifications.checkPermission.calledBefore(window.webkitNotifications.requestPermission), "checkPermission called before requestPermission");
     });
-    test("With permission", 4, function() {
-        bjurlTest.permsCheckReturn = 0;
+    test("With permission", function() {
+        var notifyObj = { show: this.stub(), cancel: this.stub() };
+        this.stub(window.webkitNotifications, "requestPermission");
+        this.stub(window.webkitNotifications, "checkPermission");
+        this.stub(window.webkitNotifications, "createNotification");
+        this.stub(window.webkitNotifications, "createHTMLNotification");
+        window.webkitNotifications.createNotification.returns(notifyObj);
+        window.webkitNotifications.createHTMLNotification.returns(notifyObj);
+        window.webkitNotifications.checkPermission.returns(0);
         Site.notify(this.data[0]);
+        ok(window.webkitNotifications.checkPermission.called, "checkPermission called");
+        ok(!window.webkitNotifications.requestPermission.called, "requestPermission not called");
+        ok(window.webkitNotifications.createHTMLNotification.called, "createHTMLNotification called");
+        ok(notifyObj.show.called, "notification start called");
     });
 
 
