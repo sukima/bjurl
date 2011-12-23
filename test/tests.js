@@ -80,6 +80,7 @@ $(document).ready(function(){
     });
     test("First time without data", function() {
         this.stub(Site,"show_error");
+        this.stub(Site, "notify");
         Site.data = [ ];
         Site.populate();
         ok(Site.running, "Application is in running state");
@@ -89,9 +90,11 @@ $(document).ready(function(){
         ok(this.nodata.is(":visible"), "#nodata is not hidden");
         ok($(".url-item").length == 0, "#url-list not populated");
         ok(Site.show_error.called, "show_error() called");
+        ok(!Site.notify.called, "notify() not called");
     });
     test("First time with data", function() {
         this.stub(Site,"show_error");
+        this.stub(Site, "notify");
         Site.data = bjurlTest.buildData("test");
         Site.populate();
         ok(Site.running, "Application is in running state");
@@ -101,9 +104,11 @@ $(document).ready(function(){
         ok(!this.nodata.is(":visible"), "#nodata is hidden");
         ok($(".url-item").length == 1, "#url-list populated");
         ok(Site.show_error.called, "show_error() called");
+        ok(!Site.notify.called, "notify() not called");
     });
     test("Running state without new data", function() {
         this.stub(Site,"show_error");
+        this.stub(Site, "notify");
         Site.running = true;
         Site.populate();
         ok(Site.update !== undefined, "Updates the timestamp");
@@ -112,9 +117,11 @@ $(document).ready(function(){
         ok(this.nodata.is(":visible"), "#nodata is not hidden");
         ok($(".url-item").length == 0, "#url-list not populated");
         ok(Site.show_error.called, "show_error() called");
+        ok(!Site.notify.called, "notify() not called");
     });
     test("Running state with new data", function() {
         this.stub(Site,"show_error");
+        this.stub(Site, "notify");
         Site.data.push(bjurlTest.buildData("test"));
         Site.size = 0;
         Site.running = true;
@@ -125,6 +132,7 @@ $(document).ready(function(){
         ok(!this.nodata.is(":visible"), "#nodata is hidden");
         ok($(".url-item").length == 1, "#url-list populated");
         ok(Site.show_error.called, "show_error() called");
+        ok(Site.notify.called, "notify() called");
     });
 
 

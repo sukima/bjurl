@@ -376,6 +376,7 @@ Site.populate = function()  {
             .prependTo('#url-list')
             .slideDown('slow')
             .animate({opacity: 1.0});
+        if (Site.running) { Site.notify(Site.data[i]); }
     }
     if (populated) { $("#nodata").hide(); }
     Site.running = true;
