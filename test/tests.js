@@ -237,8 +237,12 @@ $(document).ready(function(){
         Site.notify(this.data[0]);
         ok(window.webkitNotifications.checkPermission.called, "checkPermission called");
         ok(!window.webkitNotifications.requestPermission.called, "requestPermission not called");
+        ok(window.webkitNotifications.checkPermission.calledBefore(window.webkitNotifications.requestPermission), "checkPermission called before requestPermission");
         ok(window.webkitNotifications.createNotification.called, "createNotification called");
         ok(notifyObj.show.called, "notification start called");
+        this.clock.tick(20000);
+        ok(notifyObj.cancel.called, "notification cancel called");
+        ok(notifyObj.show.calledBefore(notifyObj.cancel), "show() called before cancel()");
     });
 
 
