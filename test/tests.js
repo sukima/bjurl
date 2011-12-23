@@ -237,7 +237,7 @@ $(document).ready(function(){
         Site.notify(this.data[0]);
         ok(window.webkitNotifications.checkPermission.called, "checkPermission called");
         ok(!window.webkitNotifications.requestPermission.called, "requestPermission not called");
-        ok(window.webkitNotifications.createHTMLNotification.called, "createHTMLNotification called");
+        ok(window.webkitNotifications.createNotification.called, "createNotification called");
         ok(notifyObj.show.called, "notification start called");
     });
 
