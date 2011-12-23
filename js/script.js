@@ -1,4 +1,4 @@
-var Site = { data: [ ], size: 0, running: false, timmer: null, error_msg: "" };
+var Site = { refresh: 30000, data: [ ], size: 0, running: false, timer: null, error_msg: "" };
 Site.show_error = function() {
     if (Site.error_msg != "") {
         $("#error").html("<span class='error_msg'>"+Site.error_msg+"</span>").show();
@@ -7,6 +7,17 @@ Site.show_error = function() {
     }
     Site.error_msg = "";
 };
+Site.notify = function(item) {
+    if (!window.webkitNotifications) { return; }
+    if (window.webkitNotifications.checkPermission() > 0) {
+        window.webkitNotifications.requestPermission(Site.notify);
+    } else {
+        var popup = window.webkitNotifications.createHTMLNotification(item.message);
+        popup.show();
+
+        window.setTimeout(popup.cancel, 15000);
+    }
+}
 Site.populate = function()  {
     var evenodd;
     var populated = false;
@@ -26,6 +37,7 @@ Site.populate = function()  {
             .prependTo('#url-list')
             .slideDown('slow')
             .animate({opacity: 1.0});
+        if (Site.running) { Site.notify(Site.data[i]); }
     }
     if (populated) { $("#nodata").hide(); }
     Site.running = true;
@@ -34,7 +46,7 @@ Site.populate = function()  {
     Site.show_error();
 };
 Site.continueCycle = function() {
-    Site.timmer = setTimeout(Site.fetch, 30000); /* 30 seconds */
+    Site.timer = setTimeout(Site.fetch, Site.refresh);
 };
 Site.success = function(d) {
     Site.data = d;
@@ -54,9 +66,9 @@ Site.clear = function() {
     return false;
 };
 Site.fetch = function()  {
-    if (Site.timmer !== null) {
-        clearTimeout(Site.timmer);
-        Site.timmer = null;
+    if (Site.timer !== null) {
+        clearTimeout(Site.timer);
+        Site.timer = null;
     }
     $.ajax({
         url: "urls.json",
