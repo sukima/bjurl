@@ -1,4 +1,5 @@
 var Site = { refresh: 30000, data: [ ], size: 0, running: false, timer: null, error_msg: "" };
+Site.weblink = "http://sukima.github.com/bjurl/weblink.gif";
 Site.show_error = function() {
     if (Site.error_msg != "") {
         $("#error").html("<span class='error_msg'>"+Site.error_msg+"</span>").show();
@@ -7,12 +8,12 @@ Site.show_error = function() {
     }
     Site.error_msg = "";
 };
-Site.notify = function(html) {
+Site.notify = function(item) {
     if (!window.webkitNotifications) { return; }
     if (window.webkitNotifications.checkPermission() > 0) {
         window.webkitNotifications.requestPermission(Site.notify);
     } else {
-        var popup = window.webkitNotifications.createNotification(html);
+        var popup = window.webkitNotifications.createNotification(Site.weblink, item.nick+" says:", item.message);
         popup.show();
 
         window.setTimeout(popup.cancel, 15000);
@@ -37,7 +38,7 @@ Site.populate = function()  {
             .prependTo('#url-list')
             .slideDown('slow')
             .animate({opacity: 1.0});
-        if (Site.running) { Site.notify(item); }
+        if (Site.running) { Site.notify(Site.data[i]); }
     }
     if (populated) { $("#nodata").hide(); }
     Site.running = true;
