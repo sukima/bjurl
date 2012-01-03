@@ -9,15 +9,15 @@ Site.show_error = function() {
     Site.error_msg = "";
 };
 Site.notify = function(item) {
-    // if (!window.webkitNotifications) { return; }
-    // if (window.webkitNotifications.checkPermission() > 0) {
-        // window.webkitNotifications.requestPermission(Site.notify);
-    // } else {
-        // var popup = window.webkitNotifications.createNotification(Site.weblink, item.nick+" says:", item.message);
-        // popup.show();
+    if (!window.webkitNotifications) { return; }
+    if (window.webkitNotifications.checkPermission() > 0) {
+        window.webkitNotifications.requestPermission(function() { Site.notify(item); });
+    } else {
+        var popup = window.webkitNotifications.createNotification(Site.weblink, item.nick+" says:", item.message);
+        popup.show();
 
-        // setTimeout(popup.cancel, 15000);
-    // }
+        setTimeout(function() { popup.cancel(); }, 10000);
+    }
 }
 Site.populate = function()  {
     var evenodd, item;
