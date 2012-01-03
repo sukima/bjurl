@@ -350,12 +350,12 @@ Site.show_error = function() {
 Site.notify = function(item) {
     if (!window.webkitNotifications) { return; }
     if (window.webkitNotifications.checkPermission() > 0) {
-        window.webkitNotifications.requestPermission(Site.notify);
+        window.webkitNotifications.requestPermission(function() { Site.notify(item); });
     } else {
         var popup = window.webkitNotifications.createNotification(Site.weblink, item.nick+" says:", item.message);
         popup.show();
 
-        window.setTimeout(popup.cancel, 15000);
+        setTimeout(function() { popup.cancel(); }, 10000);
     }
 }
 Site.populate = function()  {

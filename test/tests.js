@@ -240,8 +240,9 @@ $(document).ready(function(){
         ok(window.webkitNotifications.checkPermission.calledBefore(window.webkitNotifications.requestPermission), "checkPermission called before requestPermission");
         ok(window.webkitNotifications.createNotification.called, "createNotification called");
         ok(notifyObj.show.called, "notification start called");
-        this.clock.tick(20000);
-        ok(notifyObj.cancel.called, "notification cancel called");
+        ok(!notifyObj.cancel.called, "notification cancel not called before timer");
+        this.clock.tick(15000);
+        ok(notifyObj.cancel.called, "notification cancel called after timer");
         ok(notifyObj.show.calledBefore(notifyObj.cancel), "show() called before cancel()");
     });
 
