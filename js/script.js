@@ -1,4 +1,4 @@
-var Site = { refresh: 30000, data: [ ], size: 0, running: false, timer: null, error_msg: "" };
+var Site = { refresh: 30000, data: [ ], size: 0, running: false, timer: null, error_msg: "", enableNotifications: false };
 Site.weblink = "http://sukima.github.com/bjurl/weblink.gif";
 Site.show_error = function() {
     if (Site.error_msg != "") {
@@ -9,11 +9,11 @@ Site.show_error = function() {
     Site.error_msg = "";
 };
 Site.notify = function(item) {
-    if (!window.webkitNotifications) { return; }
+    if (!window.webkitNotifications || !Site.enableNotifications) { return; }
     if (window.webkitNotifications.checkPermission() > 0) {
         window.webkitNotifications.requestPermission(function() { Site.notify(item); });
     } else {
-        var popup = window.webkitNotifications.createNotification(Site.weblink, item.nick+" says:", item.message);
+        var popup = window.webkitNotifications.createNotification(Site.weblink, item.nick+" says:", $(item.message).text());
         popup.show();
 
         setTimeout(function() { popup.cancel(); }, 10000);
@@ -78,5 +78,15 @@ Site.fetch = function()  {
         success: Site.success,
         error: Site.error
     });
+    // initalize notifications switch on first run.
+    if (window.webkitNotifications && $("#notifyconfig").length == 0) {
+        var controls = $("#controls");
+        controls.html(controls.html() + " [<a id=\"notifyconfig\" href=\"#\">enable notifications</a>]");
+        $("#notifyconfig").click(function(e) {
+            Site.enableNotifications = !Site.enableNotifications;
+            if (Site.enableNotifications) { $("#notifyconfig").text("disable notifications"); }
+            else { $("#notifyconfig").text("enable notifyconfig"); }
+        });
+    }
     return false;
 };
