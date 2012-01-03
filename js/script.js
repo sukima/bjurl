@@ -66,6 +66,21 @@ Site.clear = function() {
         .animate({opacity: 1.0});
     return false;
 };
+Site.init = function() {
+    Site.fetch(); /* Start the load JSON cycle */
+    $("#refresh").click(Site.fetch);
+    $("#clear").click(Site.clear);
+    // initalize notifications switch on first run.
+    if (window.webkitNotifications && $("#notifyconfig").length == 0) {
+        var controls = $("#controls");
+        controls.html(controls.html() + " [<a id=\"notifyconfig\" href=\"#\">enable notifications</a>]");
+        $("#notifyconfig").click(function(e) {
+            Site.enableNotifications = !Site.enableNotifications;
+            if (Site.enableNotifications) { $("#notifyconfig").text("disable notifications"); }
+            else { $("#notifyconfig").text("enable notifyconfig"); }
+        });
+    }
+};
 Site.fetch = function()  {
     if (Site.timer !== null) {
         clearTimeout(Site.timer);
@@ -78,15 +93,5 @@ Site.fetch = function()  {
         success: Site.success,
         error: Site.error
     });
-    // initalize notifications switch on first run.
-    if (window.webkitNotifications && $("#notifyconfig").length == 0) {
-        var controls = $("#controls");
-        controls.html(controls.html() + " [<a id=\"notifyconfig\" href=\"#\">enable notifications</a>]");
-        $("#notifyconfig").click(function(e) {
-            Site.enableNotifications = !Site.enableNotifications;
-            if (Site.enableNotifications) { $("#notifyconfig").text("disable notifications"); }
-            else { $("#notifyconfig").text("enable notifyconfig"); }
-        });
-    }
     return false;
 };

@@ -26,11 +26,7 @@
       </div>
       <div id="footer"><a href="http://github.com/sukima/bjurl" target="_blank">bjurl</a> by Devin Weaver</div>
       <script type="text/javascript">
-          $(function() {
-              Site.fetch(); /* Start the load JSON cycle */
-              $("#refresh").click(Site.fetch);
-              $("#clear").click(Site.clear);
-          });
+          $(function() { Site.init(); });
       </script>
   </body>
 </html>
