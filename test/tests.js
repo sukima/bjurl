@@ -187,10 +187,11 @@ $(document).ready(function(){
     });
 
 
-    // Module fetch
+    // Module fetch {{{1
     module("fetch", {
         setup: function() {
             $.extend(Site, { data: [ ], size: 0, running:true, timer: "test_value", error_msg: "" });
+            this.controls = $("<div/>",{id:"controls"}).appendTo("#qunit-fixture");
         },
         teardown: function() {
             $.extend(Site, { data: [ ], size: 0, running: false, timer: null, error_msg: "" });
@@ -202,6 +203,7 @@ $(document).ready(function(){
         ok(Site.timer === null, "Resets Site.timer");
         ok(!ret, "Returns false");
         ok(jQuery.ajax.called, "$.ajax() called");
+        ok($("#controls #notifyconfig").length != 0, "#notifyconfig element created");
     });
 
 
@@ -209,6 +211,7 @@ $(document).ready(function(){
     module("Desktop Notifications", {
         setup: function() {
             this.data = bjurlTest.buildData("test");
+            Site.enableNotifications = true;
         }
     });
     test("Without permission", function() {

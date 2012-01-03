@@ -337,7 +337,7 @@ sub write_js_file {
     my $file = shift;
     open(FILE, ">$file") or return $!;
     print FILE <<'EOF' or return $!;
-var Site = { refresh: 30000, data: [ ], size: 0, running: false, timer: null, error_msg: "" };
+var Site = { refresh: 30000, data: [ ], size: 0, running: false, timer: null, error_msg: "", enableNotifications: false };
 Site.weblink = "http://sukima.github.com/bjurl/weblink.gif";
 Site.show_error = function() {
     if (Site.error_msg != "") {
@@ -348,11 +348,11 @@ Site.show_error = function() {
     Site.error_msg = "";
 };
 Site.notify = function(item) {
-    if (!window.webkitNotifications) { return; }
+    if (!window.webkitNotifications || !Site.enableNotifications) { return; }
     if (window.webkitNotifications.checkPermission() > 0) {
         window.webkitNotifications.requestPermission(function() { Site.notify(item); });
     } else {
-        var popup = window.webkitNotifications.createNotification(Site.weblink, item.nick+" says:", item.message);
+        var popup = window.webkitNotifications.createNotification(Site.weblink, item.nick+" says:", $(item.message).text());
         popup.show();
 
         setTimeout(function() { popup.cancel(); }, 10000);
@@ -417,6 +417,16 @@ Site.fetch = function()  {
         success: Site.success,
         error: Site.error
     });
+    // initalize notifications switch on first run.
+    if (window.webkitNotifications && $("#notifyconfig").length == 0) {
+        var controls = $("#controls");
+        controls.html(controls.html() + " [<a id=\"notifyconfig\" href=\"#\">enable notifications</a>]");
+        $("#notifyconfig").click(function(e) {
+            Site.enableNotifications = !Site.enableNotifications;
+            if (Site.enableNotifications) { $("#notifyconfig").text("disable notifications"); }
+            else { $("#notifyconfig").text("enable notifyconfig"); }
+        });
+    }
     return false;
 };
 EOF
@@ -440,7 +450,7 @@ sub write_html_file {
       <div id="container">
         <h1 class="title">IRC URL list</h1>
         <p class="last-update">Last Update: <span id="update-time"></span></p>
-        <p>[<a href="#" id="refresh">refresh</a>] [<a href="#" id="clear">clear</a>]</p>
+        <p id="controls">[<a href="#" id="refresh">refresh</a>] [<a href="#" id="clear">clear</a>]</p>
         <div id="error" style="display:none;"></div>
         <div id="url-list">
             <div id="nodata">No entries so far</div>
