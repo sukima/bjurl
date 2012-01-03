@@ -187,6 +187,22 @@ $(document).ready(function(){
     });
 
 
+    // Module init {{{1
+    module("fetch", {
+        setup: function() {
+            this.controls = $("<div/>",{id:"controls"}).appendTo("#qunit-fixture");
+            this.refresh = $("<a/>",{id:"refresh"}).appendTo(this.controls);
+            this.clear = $("<a/>",{id:"clear"}).appendTo(this.controls);
+        }
+    });
+    test("", function() {
+        this.stub(Site, "fetch");
+        Site.init();
+        ok(Site.fetch.called, "fetch() called");
+        ok($("#controls #notifyconfig").length != 0, "#notifyconfig element created");
+    });
+
+
     // Module fetch {{{1
     module("fetch", {
         setup: function() {
@@ -203,7 +219,6 @@ $(document).ready(function(){
         ok(Site.timer === null, "Resets Site.timer");
         ok(!ret, "Returns false");
         ok(jQuery.ajax.called, "$.ajax() called");
-        ok($("#controls #notifyconfig").length != 0, "#notifyconfig element created");
     });
 
 
