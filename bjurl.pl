@@ -175,9 +175,9 @@ sub split_and_insert {
 }
 
 sub parse_text {
-    my ($l) = length @items;
+    my ($l) = scalar @items;
     my (@ret) = &split_and_insert(@_);
-    &update_site_files if ($l != length @items);
+    &update_site_files if ($l != scalar @items);
     return @ret;
 }
 
