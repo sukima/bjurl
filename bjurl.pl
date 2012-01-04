@@ -407,18 +407,19 @@ Site.clear = function() {
 };
 Site.init = function() {
     Site.fetch(); /* Start the load JSON cycle */
-    $("#refresh").click(Site.fetch);
-    $("#clear").click(Site.clear);
     // initalize notifications switch on first run.
     if (window.webkitNotifications && $("#notifyconfig").length == 0) {
         var controls = $("#controls");
         controls.html(controls.html() + " [<a id=\"notifyconfig\" href=\"#\">enable notifications</a>]");
         $("#notifyconfig").click(function(e) {
+            e.preventDefault();
             Site.enableNotifications = !Site.enableNotifications;
             if (Site.enableNotifications) { $("#notifyconfig").text("disable notifications"); }
             else { $("#notifyconfig").text("enable notifyconfig"); }
         });
     }
+    $("#refresh").click(function(e) { e.preventDefault(); Site.fetch(); });
+    $("#clear").click(function(e) { e.preventDefault(); Site.clear(); });
 };
 Site.fetch = function()  {
     if (Site.timer !== null) {

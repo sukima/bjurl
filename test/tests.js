@@ -188,18 +188,29 @@ $(document).ready(function(){
 
 
     // Module init {{{1
-    module("fetch", {
+    module("init", {
         setup: function() {
             this.controls = $("<div/>",{id:"controls"}).appendTo("#qunit-fixture");
-            this.refresh = $("<a/>",{id:"refresh"}).appendTo(this.controls);
-            this.clear = $("<a/>",{id:"clear"}).appendTo(this.controls);
+            this.controls.append("<a id=\"refresh\" href=\"#\">refresh</a>");
+            this.controls.append("<a id=\"clear\" href=\"#\">clear</a>");
         }
     });
-    test("", function() {
+    test("init properly initializes elements", function() {
         this.stub(Site, "fetch");
+        this.stub(Site, "clear");
+        this.stub(window, "webkitNotifications");
+        $("#clear").click(function() { console.log("foobar"); });
         Site.init();
-        ok(Site.fetch.called, "fetch() called");
+        ok(Site.fetch.calledOnce, "fetch() called once");
+        $("#refresh").trigger("click");
+        ok(Site.fetch.calledTwice, "fetch() called again when #refresh clicked");
+        $("#clear").trigger("click");
+        ok(Site.clear.calledOnce, "clear() called once when #clear clicked");
         ok($("#controls #notifyconfig").length != 0, "#notifyconfig element created");
+        Site.enableNotifications = false;
+        $("#notifyconfig").trigger("click");
+        ok(Site.enableNotifications, "Site.enableNotifications set to true after #notifyconfig clicked");
+        ok($("#notifyconfig").text().match(/disable/), "Text changed after #notifyconfig clicked");
     });
 
 
