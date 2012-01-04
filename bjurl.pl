@@ -4,14 +4,14 @@
 use Irssi 20020121.2020 ();
 use URI::Escape;
 use HTML::Entities;
-$VERSION = "1.1";
+$VERSION = "1.2";
 %IRSSI = (
 	  authors     => 'Devin weaver',
 	  contact     => 'suki\@tritarget.org',
 	  name        => 'bjurl',
 	  description => 'A better jQuery URL grabber for Irssi',
 	  license     => 'BSD',
-	  changed     => '2011/12/13',
+	  changed     => '2012/01/04',
 	  modules     => 'URI::Escape HTML::Entities',
 	  commands    => 'bjurl'
 );
