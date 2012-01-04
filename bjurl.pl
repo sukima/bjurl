@@ -347,9 +347,12 @@ Site.show_error = function() {
     }
     Site.error_msg = "";
 };
+Site.strip = function(text) {
+    return $("<div/>").html(text).text();
+};
 Site.notify = function(item) {
     if (window.webkitNotifications && Site.enableNotifications && window.webkitNotifications.checkPermission() == 0) {
-        var popup = window.webkitNotifications.createNotification(Site.weblink, item.nick+" says:", $(item.message).text());
+        var popup = window.webkitNotifications.createNotification(Site.weblink, item.nick+" says:", Site.strip(item.message));
         popup.show();
 
         setTimeout(function() { popup.cancel(); }, 10000);
