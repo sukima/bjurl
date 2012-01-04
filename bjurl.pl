@@ -4,7 +4,7 @@
 use Irssi 20020121.2020 ();
 use URI::Escape;
 use HTML::Entities;
-$VERSION = "1.2";
+$VERSION = "1.2.1";
 %IRSSI = (
 	  authors     => 'Devin weaver',
 	  contact     => 'suki\@tritarget.org',
@@ -348,10 +348,7 @@ Site.show_error = function() {
     Site.error_msg = "";
 };
 Site.notify = function(item) {
-    if (!window.webkitNotifications || !Site.enableNotifications) { return; }
-    if (window.webkitNotifications.checkPermission() > 0) {
-        window.webkitNotifications.requestPermission(function() { Site.notify(item); });
-    } else {
+    if (window.webkitNotifications && Site.enableNotifications && window.webkitNotifications.checkPermission() == 0) {
         var popup = window.webkitNotifications.createNotification(Site.weblink, item.nick+" says:", $(item.message).text());
         popup.show();
 
@@ -414,8 +411,14 @@ Site.init = function() {
         $("#notifyconfig").click(function(e) {
             e.preventDefault();
             Site.enableNotifications = !Site.enableNotifications;
-            if (Site.enableNotifications) { $("#notifyconfig").text("disable notifications"); }
-            else { $("#notifyconfig").text("enable notifyconfig"); }
+            if (Site.enableNotifications) {
+                $("#notifyconfig").text("disable notifications");
+                if (window.webkitNotifications.checkPermission() > 0) {
+                    window.webkitNotifications.requestPermission();
+                }
+            } else {
+                $("#notifyconfig").text("enable notifyconfig");
+            }
         });
     }
     $("#refresh").click(function(e) { e.preventDefault(); Site.fetch(); });
