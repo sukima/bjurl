@@ -37,5 +37,11 @@ foreach my $arg (@ARGV) {
 # print STDERR "arg_list = @arg_list\n";
 # print STDERR "text = $text\n";
 # print STDERR "settings = ". %Irssi::script_options ."\n";
-&split_and_insert("nick", "text $text", $text);
-&$method(@arg_list);
+
+if ($method eq "print_text") {
+    # Ignore arg_list from above make our own.
+    &print_text({"level"=>1,"target"=>""}, $text, $text);
+} else {
+    &split_and_insert("nick", "text $text", $text);
+    &$method(@arg_list);
+}
