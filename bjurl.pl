@@ -474,7 +474,7 @@ EOF
 
 sub write_json_file {
     my $file = shift;
-    open(FILE, ">$file") or return $!;
+    open(FILE, ">$file.tmp") or return $!;
     print FILE "[" or return $!;
     foreach (@items) {
         my $timestamp = strftime('%Y-%m-%d %H:%M%Z', localtime $_->{time});
@@ -487,13 +487,14 @@ sub write_json_file {
     }
     print FILE "]\n" or return $!;
     close(FILE) or return $!;
+    rename("$file.tmp", $file);
     return undef;
 }
 
 sub write_static_file {
   my $file = shift;
 
-  open(FILE, ">$file") or return $!;
+  open(FILE, ">$file.tmp") or return $!;
 
   print FILE <<'EOF' or return $!;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -527,6 +528,7 @@ EOF
 EOF
 
   close(FILE) or return $!;
+  rename("$file.tmp", $file);
 
   return undef;
 }
