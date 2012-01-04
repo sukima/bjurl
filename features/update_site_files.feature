@@ -26,3 +26,21 @@ Feature: Update site files
         And a file named "test/script.js" should exist
         And a file named "test/urls.json" should exist
         And the file "test/urls.json" should contain "http://foobar.com/"
+
+    Scenario: Updating a static file
+        Given irssi has the following settings
+            | setting           | value     |
+            | url_use_webapp    | OFF       |
+            | url_html_location | test.html |
+        And the static file was created
+        When someone posts "this is a test http://foobar.example2.com/"
+        Then the file "test.html" should contain "http://foobar.example2.com/"
+
+    Scenario: Updating a webapp
+        Given irssi has the following settings
+            | setting           | value     |
+            | url_use_webapp    | ON        |
+            | url_html_location | test      |
+        And the webapp was created
+        When someone posts "this is a test http://foobar.example3.com/"
+        Then the file "test/urls.json" should contain "http://foobar.example3.com/"

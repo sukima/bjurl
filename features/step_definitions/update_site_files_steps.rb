@@ -1,6 +1,6 @@
 Before do
-    @settings = "";
-    @line = "";
+  @settings = "";
+  @line = "";
 end
 
 def run_bjurl_method(method, args="")
@@ -16,9 +16,14 @@ Given /^irssi has the following settings$/ do |table|
 end
 
 Given /^someone has posted "([^"]*)"$/ do |arg1|
-    @line = arg1
+  @line = arg1
 end
 
 When /^the html files are updated$/ do
-    run_bjurl_method "update_site_files"
+  run_bjurl_method "update_site_files"
+end
+
+When /^someone posts "([^"]*)"$/ do |arg1|
+  @line = arg1
+  run_bjurl_method "print_text"
 end
