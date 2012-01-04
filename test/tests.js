@@ -196,9 +196,12 @@ $(document).ready(function(){
         }
     });
     test("init properly initializes elements", function() {
+        this.stub(window, "webkitNotifications");
+        this.stub(window.webkitNotifications, "requestPermission");
+        this.stub(window.webkitNotifications, "checkPermission");
+        window.webkitNotifications.checkPermission.returns(1);
         this.stub(Site, "fetch");
         this.stub(Site, "clear");
-        this.stub(window, "webkitNotifications");
         $("#clear").click(function() { console.log("foobar"); });
         Site.init();
         ok(Site.fetch.calledOnce, "fetch() called once");
@@ -211,6 +214,8 @@ $(document).ready(function(){
         $("#notifyconfig").trigger("click");
         ok(Site.enableNotifications, "Site.enableNotifications set to true after #notifyconfig clicked");
         ok($("#notifyconfig").text().match(/disable/), "Text changed after #notifyconfig clicked");
+        ok(window.webkitNotifications.checkPermission.called, "Notification checkPermission() was called");
+        ok(window.webkitNotifications.requestPermission.called, "Notification requestPermission() was called");
     });
 
 
@@ -242,6 +247,7 @@ $(document).ready(function(){
     });
     test("Without permission", function() {
         var notifyObj = { show: this.stub(), cancel: this.stub() };
+        this.stub(window, "webkitNotifications");
         this.stub(window.webkitNotifications, "requestPermission");
         this.stub(window.webkitNotifications, "checkPermission");
         this.stub(window.webkitNotifications, "createNotification");
@@ -251,11 +257,12 @@ $(document).ready(function(){
         window.webkitNotifications.checkPermission.returns(1);
         Site.notify(this.data[0]);
         ok(window.webkitNotifications.checkPermission.called, "checkPermission called");
-        ok(window.webkitNotifications.requestPermission.called, "requestPermission called");
-        ok(window.webkitNotifications.checkPermission.calledBefore(window.webkitNotifications.requestPermission), "checkPermission called before requestPermission");
+        ok(!window.webkitNotifications.createNotification.called, "createNotification not called");
+        ok(!window.webkitNotifications.createHTMLNotification.called, "createHTMLNotification not called");
     });
     test("With permission", function() {
         var notifyObj = { show: this.stub(), cancel: this.stub() };
+        this.stub(window, "webkitNotifications");
         this.stub(window.webkitNotifications, "requestPermission");
         this.stub(window.webkitNotifications, "checkPermission");
         this.stub(window.webkitNotifications, "createNotification");
@@ -265,8 +272,6 @@ $(document).ready(function(){
         window.webkitNotifications.checkPermission.returns(0);
         Site.notify(this.data[0]);
         ok(window.webkitNotifications.checkPermission.called, "checkPermission called");
-        ok(!window.webkitNotifications.requestPermission.called, "requestPermission not called");
-        ok(window.webkitNotifications.checkPermission.calledBefore(window.webkitNotifications.requestPermission), "checkPermission called before requestPermission");
         ok(window.webkitNotifications.createNotification.called, "createNotification called");
         ok(notifyObj.show.called, "notification start called");
         ok(!notifyObj.cancel.called, "notification cancel not called before timer");
