@@ -40,7 +40,7 @@ foreach my $arg (@ARGV) {
 
 if ($method eq "print_text") {
     # Ignore arg_list from above make our own.
-    &print_text({"level"=>1,"target"=>""}, $text, $text);
+    &print_text({"level"=>1,"target"=>"nick"}, $text, $text);
 } else {
     &split_and_insert("nick", "text $text", $text);
     &$method(@arg_list);
