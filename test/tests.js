@@ -239,6 +239,15 @@ $(document).ready(function(){
 
 
     // Module desktop notifications {{{1
+    module("strip");
+    test("Function will pull out html from a string", function() {
+        equal(Site.strip("this is a test"), "this is a test");
+        equal(Site.strip("this is <b>a</b> test"), "this is a test");
+        equal(Site.strip("this is <a href=\"#\">a</b> test"), "this is a test");
+    });
+
+
+    // Module desktop notifications {{{1
     module("Desktop Notifications", {
         setup: function() {
             this.data = bjurlTest.buildData("test");
