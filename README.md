@@ -24,9 +24,47 @@ in your `.irssi/scripts/autoload`.
 
 ## Usage
 
+The `/url` command allows you to interact with the plugin.
+
+    /URL [-clear|-clean|-refresh|<number>]
+
+    	-clear will clear the URL list.
+    	-clean removes any writen files.
+    	-refresh cleans and rewrites HTML files.
+
+    	<number> will open the specified URL.
+
+    	If no arguments are specified, force the files to update with
+    	latest URLs and open the site.
+
+#### Configuration
+- `url_grab_level`: message levels to take in consideration. example: PUBLICS ACTIONS
+- `url_redundant`: whether to assign same URL a new number or not. example: ON
+- `url_verbose_grab`: whether to grab verbosely or not. example: OFF
+- `url_hilight`: whether to hilight the URLs in the text or not example: OFF
+- `browse_command`: a command used to open URLs. %u will be replaced by the URL. example: galeon %u &
+- `url_html_location`: where to write the URL list. example: ~/.irssi-urls.html
+- `url_use_webapp`: create a dynamic JavaScript based web app or just a static html file. example: OFF
+
+
 ## Testing
 
+The `Gemfile` file uses [bundler][4] to install the [cucumber][5] gem. Once
+installed you can run the `test/run_tests.sh` file. It will run through the
+cucumber tests and then output a `file://` link to a test page that you can
+copy and paste to your browser to test the JavaScript. (Internet connection
+required for CDN access)
+
+Javascript tests use [Qunit][6] and [SinonJS][7].
+
+[4]: http://gembundler.com/
+[5]: http://cukes.info/
+[6]: http://docs.jquery.com/QUnit
+[7]: http://sinonjs.org/
+
 #### Why would I use cucumber with an irssi perl script?
+
+I wanted to learn cucumber. I had no relevent Ruby projects to work on at the time.
 
 ## License
 Copyright &copy; 2011 Devin Weaver. All Rights Reserved.  

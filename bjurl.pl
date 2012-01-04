@@ -72,14 +72,16 @@ $VERSION = "1.2.2";
 #
 # commands
 #
-#	/URL [-clear|<number>]
+#	/URL [-clear|-clean|-refresh|<number>]
 #
 #		-clear will clear the URL list.
+#		-clean removes any writen files.
+#		-refresh cleans and rewrites HTML files.
 #
 #		<number> will open the specified URL.
 #
-#		If no arguments are specified, a HTML file containing all
-#		grabbed URLs will be written and opened.
+#		If no arguments are specified, force the files to update with
+#		latest URLs and open the site.
 
 use strict;
 use POSIX qw(strftime);
