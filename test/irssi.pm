@@ -32,7 +32,7 @@ sub settings_get_bool {
 
 sub level2bits {
     print "level2bits called\n";
-    return 0;
+    return 1;
 }
 
 sub signal_emit {
