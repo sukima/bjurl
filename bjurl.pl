@@ -476,21 +476,18 @@ EOF
     return undef;
 }
 
-sub escape_quotes {
-    my $ret = $_;
-    $ret =~ s/"/\\"/g;
-    return $ret;
-}
-
 sub write_json_file {
     my $file = shift;
     open(FILE, ">$file.tmp") or return $!;
     print FILE "[" or return $!;
     foreach (@items) {
         my $timestamp = strftime('%Y-%m-%d %H:%M%Z', localtime $_->{time});
-        my $pre = &escape_quotes(HTML::Entities::encode($_->{pre_url}));
-        my $post = &escape_quotes(HTML::Entities::encode($_->{post_url}));
-        my $target = &escape_quotes($_{target});
+        my $pre = HTML::Entities::encode($_->{pre_url});
+        my $post = HTML::Entities::encode($_->{post_url});
+        my $target = $_->{target};
+        $pre =~ s/"/\"/g;
+        $post =~ s/"/\"/g;
+        $target =~ s/"/\"/g;
         print FILE
         "{\"time\":\"$timestamp\",\"nick\":\"$target\",\"message\":\"$pre<a href='"
         . HTML::Entities::encode(uri_escape($_->{url}, "^-A-Za-z0-9./:")) . "'>"
