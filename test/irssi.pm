@@ -12,7 +12,7 @@ sub settings_add_str {
 }
 
 sub settings_add_bool {
-    print "settings_add_bool called with @_\n";
+    #print "settings_add_bool called with @_\n";
     $script_options{ $_[1] } = ($_[2]) ? "ON" : "OFF"; # ignore first argument
 }
 
