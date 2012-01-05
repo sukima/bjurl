@@ -495,7 +495,7 @@ sub write_json_file {
         $target =~ s/"/\"/g;
         print FILE
         "{\"time\":\"$timestamp\",\"nick\":\"$target\",\"message\":\"$pre<a href='"
-        . HTML::Entities::encode(uri_escape($_->{url}, "^-A-Za-z0-9./:")) . "'>"
+        . HTML::Entities::encode(uri_escape($_->{url}, "^-A-Za-z0-9./:")) . "' target='_blank'>"
         . HTML::Entities::encode($_->{url}) . "</a>$post\"}"
             or return $!;
         print FILE "," unless ($_ == $items[-1]);
