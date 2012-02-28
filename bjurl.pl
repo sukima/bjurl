@@ -4,7 +4,7 @@
 use Irssi 20020121.2020 ();
 use URI::Escape;
 use HTML::Entities;
-$VERSION = "1.2.3";
+$VERSION = "1.2.4";
 %IRSSI = (
 	  authors     => 'Devin weaver',
 	  contact     => 'suki\@tritarget.org',
