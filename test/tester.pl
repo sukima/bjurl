@@ -11,7 +11,7 @@ use constant MSGLEVEL_CLIENTERROR => 0;
 use constant MSGS => 0;
 
 die "Incorrect number of arguments" if ($#ARGV+1 < 1);
-use Irssi;
+require "irssi.pl";
 require "bjurl.pl";
 
 # Since bjurl.pl is loaded prior to us assigning any values the default are
