@@ -122,6 +122,11 @@ sub expand {
 }
 # -verbatim- end
 
+# Used for testing only.
+sub get_items {
+    return @items;
+}
+
 sub push_items {
     if (scalar(@items) >= Irssi::settings_get_int('url_max_urls')) {
         shift @items;
