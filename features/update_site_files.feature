@@ -44,3 +44,11 @@ Feature: Update site files
         And the webapp was created
         When someone posts "this is a test http://foobar.example3.com/"
         Then the file "test/urls.json" should contain "http://foobar.example3.com/"
+
+    Scenario: Max limits
+        Given irssi has the following settings
+            | setting      | value |
+            | url_max_urls | 20    |
+        And 20 urls are stored
+        When someone posts "this is a test http://foobar.example3.com/"
+        Then there should be 20 urls stored

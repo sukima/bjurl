@@ -41,6 +41,20 @@ foreach my $arg (@ARGV) {
 if ($method eq "print_text") {
     # Ignore arg_list from above make our own.
     &print_text({"level"=>1,"target"=>"nick"}, $text, $text);
+} elsif ($method eq "test_mem_storage") {
+    for($i = 0; $i < $arg_list[0]; $i++) {
+        &push_items({
+            time => time,
+            target => "foobar",
+            pre_url => "Test url post: ",
+            url => "http://test.com/",
+            post_url => " #$i"
+        });
+    }
+    &split_and_insert("nick", "text $text", $text);
+    print "Total number of urls stored: ";
+    print scalar(&get_items);
+    print "\n";
 } else {
     &split_and_insert("nick", "text $text", $text);
     &$method(@arg_list);
