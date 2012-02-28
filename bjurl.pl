@@ -23,6 +23,11 @@ $VERSION = "1.2.3";
 #
 # /set's:
 #
+#       url_max_urls
+#
+#               The maximun number of URL to keep in memory
+#               default: 20
+#
 #	url_grab_level
 #
 #		message levels to take in consideration
@@ -597,6 +602,7 @@ sub url {
   }
 }
 
+Irssi::settings_add_int('misc', 'url_max_urls', 20);
 Irssi::settings_add_str('misc', 'url_grab_level',
 			'PUBLIC TOPICS ACTIONS MSGS DCCMSGS');
 Irssi::settings_add_bool('lookandfeel', 'url_verbose_grab', undef);
